@@ -75,7 +75,7 @@
             border-radius: 6px;
             padding: 12px;
             color: #ffffff;
-            font-size: 16px; /* Предотвращает зум в iOS */
+            font-size: 16px;
             line-height: 1.4;
             resize: vertical;
             margin-bottom: 15px;
@@ -296,6 +296,25 @@
             line-height: 1.4;
         }
 
+        /* Подсказка для мобильных устройств */
+        .mobile-hint {
+            background-color: rgba(28, 58, 173, 0.2);
+            border: 1px solid #1c3aad;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a3b1cc;
+            display: none;
+        }
+
+        .mobile-hint span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         /* Свайп-индикатор для команд на мобильных */
         .swipe-hint {
             text-align: center;
@@ -352,6 +371,11 @@
             font-weight: 600;
             cursor: pointer;
             text-align: center;
+            transition: all 0.2s;
+        }
+
+        .team-select-btn:active {
+            transform: scale(0.98);
         }
 
         .team-select-btn.cancel {
@@ -403,6 +427,10 @@
             .team-select-modal {
                 display: none !important;
             }
+            
+            .mobile-hint {
+                display: none !important;
+            }
         }
 
         @media (min-width: 1024px) {
@@ -423,7 +451,7 @@
         }
 
         /* Улучшение для очень маленьких экранов */
-        @media (max-width: 360px) {
+        @media (max-width: 767px) {
             h1 {
                 font-size: 1.5rem;
             }
@@ -433,7 +461,35 @@
             }
             
             .player-item {
-                padding: 8px;
+                padding: 12px;
+            }
+            
+            .player-name {
+                font-size: 0.9rem;
+            }
+            
+            .mobile-hint {
+                display: block;
+            }
+            
+            .team-select-btn {
+                padding: 18px;
+                font-size: 1.1rem;
+                min-height: 60px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            h2 {
+                font-size: 1.1rem;
+            }
+            
+            .player-item {
+                padding: 10px;
             }
             
             .player-name {
@@ -493,6 +549,9 @@
             
             <div class="teams-section">
                 <h2>Команды <span class="swipe-hint">(перетащите игроков между командами)</span></h2>
+                <div class="mobile-hint" id="mobileHint">
+                    <span>💡 Нажмите на игрока, чтобы переместить в другую команду</span>
+                </div>
                 <div class="teams-container" id="teamsContainer">
                     <div class="team-block">
                         <div class="team-header">
@@ -688,6 +747,7 @@
         const teamSelectModal = document.getElementById('teamSelectModal');
         const teamSelectTitle = document.getElementById('teamSelectTitle');
         const cancelTeamSelectBtn = document.getElementById('cancelTeamSelect');
+        const mobileHint = document.getElementById('mobileHint');
 
         // Инициализация
         function init() {
@@ -733,32 +793,22 @@
                 list.addEventListener('drop', (e) => e.preventDefault());
             });
             
-            // Добавляем длинное нажатие для перетаскивания (опционально)
-            setupLongPress();
+            // Показываем подсказку для мобильных
+            setupMobileHint();
         }
 
-        // Настройка длинного нажатия
-        function setupLongPress() {
-            let pressTimer;
-            
-            document.addEventListener('touchstart', function(e) {
-                const playerItem = e.target.closest('.player-item');
-                if (playerItem) {
-                    pressTimer = setTimeout(() => {
-                        // Долгое нажатие - показываем меню выбора команды
-                        const playerId = parseInt(playerItem.dataset.playerId);
-                        showTeamSelectModal(playerId);
-                    }, 500); // 500ms для длинного нажатия
-                }
-            });
-            
-            document.addEventListener('touchend', function() {
-                clearTimeout(pressTimer);
-            });
-            
-            document.addEventListener('touchmove', function() {
-                clearTimeout(pressTimer);
-            });
+        // Настройка мобильной подсказки
+        function setupMobileHint() {
+            if (mobileHint && state.isMobile) {
+                mobileHint.style.display = 'block';
+                
+                // Скрываем подсказку через 10 секунд
+                setTimeout(() => {
+                    if (mobileHint) {
+                        mobileHint.style.display = 'none';
+                    }
+                }, 10000);
+            }
         }
 
         // Настройка модального окна для выбора команды
@@ -798,8 +848,13 @@
             if (!player) return;
             
             state.selectedPlayer = playerId;
-            teamSelectTitle.textContent = `Переместить ${player.name}`;
+            teamSelectTitle.textContent = `Переместить ${player.name} (Рейтинг: ${player.rank})`;
             teamSelectModal.style.display = 'flex';
+            
+            // Добавляем вибрацию на поддерживаемых устройствах
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
         }
 
         // Перемещение игрока в команду
@@ -1033,6 +1088,8 @@
             // На мобильных добавляем обработчик тапа для выбора команды
             if (state.isMobile) {
                 div.addEventListener('click', (e) => {
+                    // Предотвращаем всплытие
+                    e.stopPropagation();
                     // На мобильных показываем меню выбора команды по тапу
                     showTeamSelectModal(player.id);
                 });

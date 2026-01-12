@@ -4,18 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Team Distributor</title>
-    <noscript>
-        <style>
-            .noscript-warning {
-                background-color: #dc3545;
-                color: white;
-                padding: 20px;
-                text-align: center;
-                border-radius: 8px;
-                margin: 20px 0;
-            }
-        </style>
-    </noscript>
     <style>
         * {
             margin: 0;
@@ -117,21 +105,17 @@
             touch-action: manipulation;
             position: relative;
             overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
         }
 
-        button:active, button:focus-visible {
+        button:active {
             transform: scale(0.98);
-            outline: 2px solid #4d7cff;
-            outline-offset: 2px;
         }
 
         button.copy-btn {
             background-color: #0a8754;
         }
 
-        button.copy-btn:active, button.copy-btn:focus-visible {
+        button.copy-btn:active {
             background-color: #0db37c;
         }
 
@@ -204,18 +188,11 @@
             touch-action: none;
             user-select: none;
             transition: transform 0.2s;
-            -webkit-user-select: none;
-            -webkit-user-drag: element;
         }
 
         .player-item:active {
             transform: scale(0.98);
             background-color: #14213d;
-        }
-
-        .player-item:focus-visible {
-            outline: 2px solid #4d7cff;
-            outline-offset: 2px;
         }
 
         .player-name {
@@ -308,10 +285,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .notification.error {
-            background-color: #dc3545;
-        }
-
         .info-box {
             background-color: rgba(28, 58, 173, 0.1);
             border: 1px solid #1c3aad;
@@ -372,9 +345,7 @@
             padding: 20px;
             width: 100%;
             max-width: 400px;
-            max-height: 80vh;
             border: 2px solid #1c3aad;
-            overflow-y: auto;
         }
 
         .team-select-title {
@@ -403,10 +374,8 @@
             transition: all 0.2s;
         }
 
-        .team-select-btn:active, .team-select-btn:focus-visible {
+        .team-select-btn:active {
             transform: scale(0.98);
-            outline: 2px solid #4d7cff;
-            outline-offset: 2px;
         }
 
         .team-select-btn.cancel {
@@ -414,49 +383,8 @@
             margin-top: 10px;
         }
 
-        /* Стили для состояния перетаскивания */
-        .player-item.dragging {
-            opacity: 0.7;
-            box-shadow: 0 0 15px rgba(28, 58, 173, 0.5);
-        }
-
-        .players-list.drag-over {
-            background-color: rgba(28, 58, 173, 0.15);
-            border-style: solid;
-        }
-
-        /* Улучшение скролла на мобильных */
-        .players-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .players-list::-webkit-scrollbar-track {
-            background: rgba(28, 58, 173, 0.1);
-            border-radius: 3px;
-        }
-
-        .players-list::-webkit-scrollbar-thumb {
-            background: #1c3aad;
-            border-radius: 3px;
-        }
-
-        /* Статистика поиска */
-        .search-stats {
-            background-color: rgba(28, 58, 173, 0.1);
-            border: 1px solid #1c3aad;
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: #a3b1cc;
-        }
-
-        .search-stats div {
-            margin: 5px 0;
-        }
-
         /* Медиа-запросы для планшетов и десктопов */
-        @media (min-width: 1024px) {
+        @media (min-width: 768px) {
             body {
                 padding: 20px;
             }
@@ -481,7 +409,7 @@
             }
             
             .team-block {
-                min-width: calc(33.333% - 15px);
+                min-width: calc(33.333% - 10px);
             }
             
             .button-group {
@@ -505,28 +433,13 @@
             }
         }
 
-        @media (min-width: 1200px) {
+        @media (min-width: 1024px) {
             .container {
                 max-width: 1200px;
             }
-        }
-
-        /* Для планшетов 768-1024px - используем мобильный интерфейс */
-        @media (min-width: 768px) and (max-width: 1023px) {
-            .app-container {
-                flex-direction: column;
-            }
-            
-            .mobile-hint {
-                display: block !important;
-            }
-            
-            .swipe-hint {
-                display: none !important;
-            }
             
             .team-block {
-                min-width: 100%;
+                min-width: calc(33.333% - 15px);
             }
         }
 
@@ -564,10 +477,6 @@
                 font-size: 1.1rem;
                 min-height: 60px;
             }
-            
-            .team-select-content {
-                max-width: 90vw;
-            }
         }
 
         @media (max-width: 360px) {
@@ -587,16 +496,36 @@
                 font-size: 0.85rem;
             }
         }
+
+        /* Стили для состояния перетаскивания */
+        .player-item.dragging {
+            opacity: 0.7;
+            box-shadow: 0 0 15px rgba(28, 58, 173, 0.5);
+        }
+
+        .players-list.drag-over {
+            background-color: rgba(28, 58, 173, 0.15);
+            border-style: solid;
+        }
+
+        /* Улучшение скролла на мобильных */
+        .players-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .players-list::-webkit-scrollbar-track {
+            background: rgba(28, 58, 173, 0.1);
+            border-radius: 3px;
+        }
+
+        .players-list::-webkit-scrollbar-thumb {
+            background: #1c3aad;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <noscript>
-            <div class="noscript-warning">
-                <strong>Внимание:</strong> Для работы приложения требуется JavaScript. Пожалуйста, включите JavaScript в настройках вашего браузера.
-            </div>
-        </noscript>
-        
         <header>
             <h1>Team Distributor</h1>
             <p class="subtitle">Распределение игроков по командам</p>
@@ -610,12 +539,6 @@
                 <div class="info-box">
                     <strong>Примечание:</strong> Программа автоматически удалит номера и точки. 
                     В базе 50 игроков. Если фамилия не найдена, она будет проигнорирована.
-                    <strong>Дефисы в фамилиях сохраняются.</strong>
-                </div>
-                
-                <div class="search-stats" id="searchStats" style="display: none;">
-                    <div>Найдено игроков: <span id="foundCount">0</span></div>
-                    <div>Не найдено: <span id="notFoundCount">0</span></div>
                 </div>
                 
                 <div class="button-group">
@@ -630,28 +553,119 @@
                     <span>💡 Нажмите на игрока, чтобы переместить в другую команду</span>
                 </div>
                 <div class="teams-container" id="teamsContainer">
-                    <!-- Команды будут сгенерированы динамически -->
+                    <div class="team-block">
+                        <div class="team-header">
+                            <div class="team-title">Команда 1</div>
+                            <div class="player-count">0</div>
+                        </div>
+                        <div class="players-list" id="team1" data-team="1">
+                            <p style="text-align: center; color: #6c757d; margin-top: 50px;">Игроки будут здесь</p>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team1-total">0</span>
+                                    <span class="stat-label">Сумма рейтингов</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team1-avg">0</span>
+                                    <span class="stat-label">Средний рейтинг</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team1-male">0</span>
+                                    <span class="stat-label">Мужчин</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team1-female">0</span>
+                                    <span class="stat-label">Женщин</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-block">
+                        <div class="team-header">
+                            <div class="team-title">Команда 2</div>
+                            <div class="player-count">0</div>
+                        </div>
+                        <div class="players-list" id="team2" data-team="2">
+                            <p style="text-align: center; color: #6c757d; margin-top: 50px;">Игроки будут здесь</p>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team2-total">0</span>
+                                    <span class="stat-label">Сумма рейтингов</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team2-avg">0</span>
+                                    <span class="stat-label">Средний рейтинг</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team2-male">0</span>
+                                    <span class="stat-label">Мужчин</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team2-female">0</span>
+                                    <span class="stat-label">Женщин</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-block">
+                        <div class="team-header">
+                            <div class="team-title">Команда 3</div>
+                            <div class="player-count">0</div>
+                        </div>
+                        <div class="players-list" id="team3" data-team="3">
+                            <p style="text-align: center; color: #6c757d; margin-top: 50px;">Игроки будут здесь</p>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team3-total">0</span>
+                                    <span class="stat-label">Сумма рейтингов</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team3-avg">0</span>
+                                    <span class="stat-label">Средний рейтинг</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team3-male">0</span>
+                                    <span class="stat-label">Мужчин</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value" id="team3-female">0</span>
+                                    <span class="stat-label">Женщин</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- Модальное окно для выбора команды на мобильных -->
-        <div class="team-select-modal" id="teamSelectModal" aria-hidden="true" aria-modal="true" aria-labelledby="teamSelectTitle" role="dialog">
+        <div class="team-select-modal" id="teamSelectModal">
             <div class="team-select-content">
                 <div class="team-select-title" id="teamSelectTitle">Переместить игрока</div>
-                <div class="team-select-options" id="teamSelectOptions">
-                    <!-- Кнопки команд будут добавлены динамически -->
+                <div class="team-select-options">
+                    <button class="team-select-btn" data-team="1">Команда 1</button>
+                    <button class="team-select-btn" data-team="2">Команда 2</button>
+                    <button class="team-select-btn" data-team="3">Команда 3</button>
+                    <button class="team-select-btn cancel" id="cancelTeamSelect">Отмена</button>
                 </div>
             </div>
         </div>
         
-        <div class="notification" id="notification" role="alert">
+        <div class="notification" id="notification">
             Списки команд скопированы в буфер обмена!
         </div>
     </div>
 
     <script>
-        // База данных игроков (обновленная с учетом дефисов)
+        // База данных игроков
         const playersDB = {
             'жигалин': { name: 'Жигалин', rank: 7, gender: 'м' },
             'переведенцев': { name: 'Переведенцев', rank: 4, gender: 'м' },
@@ -709,69 +723,21 @@
             'ушаков': { name: 'Ушаков', rank: 4, gender: 'м' },
             'удалов': { name: 'Удалов', rank: 4, gender: 'м' },
             'шапошников': { name: 'Шапошников', rank: 3, gender: 'м' },
-            'шепелев': { name: 'Шепелев В.М.', rank: 5, gender: 'м' },
-            'салтыков-щедрин': { name: 'Салтыков-Щедрин', rank: 7, gender: 'м' } // Пример с дефисом
+            'шепелев': { name: 'Шепелев В.М.', rank: 5, gender: 'м' }
         };
 
         // Состояние приложения
         const state = {
             players: [],
-            teams: {},
+            teams: {
+                1: [],
+                2: [],
+                3: []
+            },
             nextId: 1,
             isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-            isTouchDevice: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-            selectedPlayer: null,
-            teamCount: 3, // Количество команд (можно расширить в будущем)
-            foundPlayersCount: 0,
-            notFoundPlayersCount: 0
+            selectedPlayer: null
         };
-
-        // Инициализация команд
-        function initializeTeams() {
-            state.teams = {};
-            const teamsContainer = document.getElementById('teamsContainer');
-            teamsContainer.innerHTML = '';
-            
-            for (let i = 1; i <= state.teamCount; i++) {
-                state.teams[i] = [];
-                
-                const teamBlock = document.createElement('div');
-                teamBlock.className = 'team-block';
-                teamBlock.innerHTML = `
-                    <div class="team-header">
-                        <div class="team-title">Команда ${i}</div>
-                        <div class="player-count">0</div>
-                    </div>
-                    <div class="players-list" id="team${i}" data-team="${i}" 
-                         aria-label="Список игроков команды ${i}"
-                         aria-dropeffect="move">
-                        <p style="text-align: center; color: #6c757d; margin-top: 50px;">Игроки будут здесь</p>
-                    </div>
-                    <div class="team-stats">
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <span class="stat-value" id="team${i}-total">0</span>
-                                <span class="stat-label">Сумма рейтингов</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="team${i}-avg">0</span>
-                                <span class="stat-label">Средний рейтинг</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="team${i}-male">0</span>
-                                <span class="stat-label">Мужчин</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="team${i}-female">0</span>
-                                <span class="stat-label">Женщин</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                teamsContainer.appendChild(teamBlock);
-            }
-        }
 
         // DOM элементы
         const playerInput = document.getElementById('playerInput');
@@ -780,36 +746,19 @@
         const notification = document.getElementById('notification');
         const teamSelectModal = document.getElementById('teamSelectModal');
         const teamSelectTitle = document.getElementById('teamSelectTitle');
-        const teamSelectOptions = document.getElementById('teamSelectOptions');
+        const cancelTeamSelectBtn = document.getElementById('cancelTeamSelect');
         const mobileHint = document.getElementById('mobileHint');
-        const searchStats = document.getElementById('searchStats');
-        const foundCount = document.getElementById('foundCount');
-        const notFoundCount = document.getElementById('notFoundCount');
 
         // Инициализация
         function init() {
-            console.log('Приложение инициализировано');
-            console.log('Мобильное устройство:', state.isMobile);
-            console.log('Touch устройство:', state.isTouchDevice);
-            
-            // Инициализация команд
-            initializeTeams();
-            
-            // Настройка событий
+            console.log('Приложение инициализировано, мобильное устройство:', state.isMobile);
             startBtn.addEventListener('click', startDistribution);
             copyBtn.addEventListener('click', copyTeams);
             
-            // Настройка клавиатурной навигации
-            setupKeyboardNavigation();
-            
-            // Определение интерфейса в зависимости от устройства
-            const isTablet = window.innerWidth >= 768 && window.innerWidth <= 1024;
-            
-            if (state.isMobile || state.isTouchDevice || isTablet) {
-                // Используем мобильный интерфейс для touch-устройств и планшетов
+            // Инициализация drag-and-drop или тап-интерфейса в зависимости от устройства
+            if (state.isMobile) {
                 setupTouchInterface();
             } else {
-                // Используем drag-and-drop для десктопов
                 setupDragAndDrop();
             }
             
@@ -818,12 +767,6 @@
             
             // Предотвращение зума при двойном тапе
             preventDoubleTapZoom();
-            
-            // Инициализация мобильной подсказки
-            setupMobileHint();
-            
-            // Фокус на поле ввода
-            playerInput.focus();
         }
 
         // Предотвращение зума при двойном тапе
@@ -840,22 +783,23 @@
 
         // Настройка интерфейса для touch устройств
         function setupTouchInterface() {
-            console.log('Настройка touch-интерфейса');
+            console.log('Настройка touch-интерфейса для мобильных устройств');
             
-            // Скрываем подсказку для drag-and-drop
-            document.querySelectorAll('.swipe-hint').forEach(el => {
-                el.style.display = 'none';
+            const teamLists = document.querySelectorAll('.players-list');
+            
+            teamLists.forEach(list => {
+                // Отключаем стандартный drag-and-drop на мобильных
+                list.addEventListener('dragover', (e) => e.preventDefault());
+                list.addEventListener('drop', (e) => e.preventDefault());
             });
             
-            // Показываем мобильную подсказку
-            if (mobileHint) {
-                mobileHint.style.display = 'block';
-            }
+            // Показываем подсказку для мобильных
+            setupMobileHint();
         }
 
         // Настройка мобильной подсказки
         function setupMobileHint() {
-            if (mobileHint && (state.isMobile || state.isTouchDevice)) {
+            if (mobileHint && state.isMobile) {
                 mobileHint.style.display = 'block';
                 
                 // Скрываем подсказку через 10 секунд
@@ -869,45 +813,33 @@
 
         // Настройка модального окна для выбора команды
         function setupTeamSelectModal() {
-            // Создаем кнопки для выбора команд
-            teamSelectOptions.innerHTML = '';
-            
-            for (let i = 1; i <= state.teamCount; i++) {
-                const button = document.createElement('button');
-                button.className = 'team-select-btn';
-                button.dataset.team = i;
-                button.textContent = `Команда ${i}`;
-                button.addEventListener('click', handleTeamSelect);
-                teamSelectOptions.appendChild(button);
-            }
-            
-            // Кнопка отмены
-            const cancelButton = document.createElement('button');
-            cancelButton.className = 'team-select-btn cancel';
-            cancelButton.id = 'cancelTeamSelect';
-            cancelButton.textContent = 'Отмена';
-            cancelButton.addEventListener('click', () => {
-                closeTeamSelectModal();
+            // Закрытие модального окна
+            cancelTeamSelectBtn.addEventListener('click', () => {
+                teamSelectModal.style.display = 'none';
+                state.selectedPlayer = null;
             });
-            teamSelectOptions.appendChild(cancelButton);
             
             // Закрытие при клике вне окна
             teamSelectModal.addEventListener('click', (e) => {
                 if (e.target === teamSelectModal) {
-                    closeTeamSelectModal();
+                    teamSelectModal.style.display = 'none';
+                    state.selectedPlayer = null;
                 }
             });
-        }
-
-        // Обработка выбора команды
-        function handleTeamSelect(e) {
-            if (!state.selectedPlayer) return;
             
-            const targetTeam = parseInt(e.target.dataset.team);
-            const playerId = state.selectedPlayer;
-            
-            movePlayerToTeam(playerId, targetTeam);
-            closeTeamSelectModal();
+            // Обработка выбора команды
+            document.querySelectorAll('.team-select-btn[data-team]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (!state.selectedPlayer) return;
+                    
+                    const targetTeam = parseInt(e.target.dataset.team);
+                    const playerId = state.selectedPlayer;
+                    
+                    movePlayerToTeam(playerId, targetTeam);
+                    teamSelectModal.style.display = 'none';
+                    state.selectedPlayer = null;
+                });
+            });
         }
 
         // Показать модальное окно для выбора команды
@@ -918,58 +850,11 @@
             state.selectedPlayer = playerId;
             teamSelectTitle.textContent = `Переместить ${player.name} (Рейтинг: ${player.rank})`;
             teamSelectModal.style.display = 'flex';
-            teamSelectModal.setAttribute('aria-hidden', 'false');
-            
-            // Фокус на первую кнопку
-            const firstButton = teamSelectOptions.querySelector('.team-select-btn[data-team]');
-            if (firstButton) {
-                firstButton.focus();
-            }
             
             // Добавляем вибрацию на поддерживаемых устройствах
             if (navigator.vibrate) {
                 navigator.vibrate(50);
             }
-        }
-
-        // Закрыть модальное окно
-        function closeTeamSelectModal() {
-            teamSelectModal.style.display = 'none';
-            teamSelectModal.setAttribute('aria-hidden', 'true');
-            state.selectedPlayer = null;
-        }
-
-        // Настройка клавиатурной навигации
-        function setupKeyboardNavigation() {
-            // Закрытие модального окна по Esc
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && teamSelectModal.style.display === 'flex') {
-                    closeTeamSelectModal();
-                }
-                
-                // Навигация по Tab в модальном окне
-                if (e.key === 'Tab' && teamSelectModal.style.display === 'flex') {
-                    const focusableElements = teamSelectOptions.querySelectorAll('button');
-                    const firstElement = focusableElements[0];
-                    const lastElement = focusableElements[focusableElements.length - 1];
-                    
-                    if (e.shiftKey && document.activeElement === firstElement) {
-                        e.preventDefault();
-                        lastElement.focus();
-                    } else if (!e.shiftKey && document.activeElement === lastElement) {
-                        e.preventDefault();
-                        firstElement.focus();
-                    }
-                }
-                
-                // Выбор команды по Enter в модальном окне
-                if (e.key === 'Enter' && teamSelectModal.style.display === 'flex') {
-                    const activeElement = document.activeElement;
-                    if (activeElement.classList.contains('team-select-btn') && activeElement.dataset.team) {
-                        activeElement.click();
-                    }
-                }
-            });
         }
 
         // Перемещение игрока в команду
@@ -988,9 +873,7 @@
             }
             
             // Удаляем из старой команды
-            if (oldTeam && state.teams[oldTeam]) {
-                state.teams[oldTeam] = state.teams[oldTeam].filter(p => p.id !== playerId);
-            }
+            state.teams[oldTeam] = state.teams[oldTeam].filter(p => p.id !== playerId);
             
             // Добавляем в новую команду
             player.team = targetTeam;
@@ -1003,64 +886,57 @@
 
         // Настройка drag-and-drop для десктопов
         function setupDragAndDrop() {
-            // Обработка начала перетаскивания
-            document.addEventListener('dragstart', (e) => {
-                if (e.target.classList.contains('player-item')) {
-                    const playerId = parseInt(e.target.dataset.playerId);
-                    if (playerId) {
-                        e.dataTransfer.setData('text/plain', playerId.toString());
-                        e.dataTransfer.effectAllowed = 'move';
-                        e.target.classList.add('dragging');
-                        e.target.setAttribute('aria-grabbed', 'true');
-                        
-                        // Для Safari
-                        if (typeof e.dataTransfer.setDragImage === 'function') {
-                            const dragImage = e.target.cloneNode(true);
-                            dragImage.style.opacity = '0.5';
-                            dragImage.style.position = 'absolute';
-                            dragImage.style.top = '-1000px';
-                            document.body.appendChild(dragImage);
-                            e.dataTransfer.setDragImage(dragImage, 0, 0);
-                            setTimeout(() => document.body.removeChild(dragImage), 0);
-                        }
-                    }
-                }
-            }, false);
+            const teamLists = document.querySelectorAll('.players-list');
             
-            // Обработка завершения перетаскивания
-            document.addEventListener('dragend', (e) => {
-                if (e.target.classList.contains('player-item')) {
-                    e.target.classList.remove('dragging');
-                    e.target.setAttribute('aria-grabbed', 'false');
-                    document.querySelectorAll('.players-list.drag-over').forEach(el => {
-                        el.classList.remove('drag-over');
-                    });
-                }
-            }, false);
-            
-            // Настройка зон drop
-            document.querySelectorAll('.players-list').forEach(list => {
-                list.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'move';
-                    list.classList.add('drag-over');
-                });
-                
+            teamLists.forEach(list => {
+                list.addEventListener('dragover', handleDragOver);
+                list.addEventListener('drop', handleDrop);
                 list.addEventListener('dragleave', () => {
                     list.classList.remove('drag-over');
                 });
-                
-                list.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    list.classList.remove('drag-over');
-                    
-                    const playerId = parseInt(e.dataTransfer.getData('text/plain'));
-                    if (!playerId) return;
-                    
-                    const targetTeam = parseInt(list.dataset.team);
-                    movePlayerToTeam(playerId, targetTeam);
-                });
             });
+        }
+
+        let draggedPlayerId = null;
+
+        function handleDragStart(e) {
+            if (state.isMobile) {
+                e.preventDefault();
+                return;
+            }
+            
+            draggedPlayerId = e.target.dataset.playerId;
+            e.dataTransfer.effectAllowed = 'move';
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (state.isMobile) return;
+            
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (state.isMobile) return;
+            
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            if (!draggedPlayerId) return;
+            
+            const targetTeam = parseInt(e.currentTarget.dataset.team);
+            const playerId = parseInt(draggedPlayerId);
+            
+            movePlayerToTeam(playerId, targetTeam);
+            
+            // Снимаем класс dragging
+            document.querySelectorAll('.player-item.dragging').forEach(el => {
+                el.classList.remove('dragging');
+            });
+            
+            draggedPlayerId = null;
         }
 
         // Запуск распределения
@@ -1068,19 +944,14 @@
             console.log('Начинаем распределение...');
             const inputText = playerInput.value.trim();
             if (!inputText) {
-                showNotification('Введите список игроков', 'error');
+                showNotification('Введите список игроков');
                 return;
             }
 
             // Сброс состояния
             state.players = [];
-            state.teams = {};
-            for (let i = 1; i <= state.teamCount; i++) {
-                state.teams[i] = [];
-            }
+            state.teams = { 1: [], 2: [], 3: [] };
             state.nextId = 1;
-            state.foundPlayersCount = 0;
-            state.notFoundPlayersCount = 0;
 
             // Парсинг ввода
             const lines = inputText.split('\n');
@@ -1103,37 +974,28 @@
                     };
                     state.players.push(player);
                     foundPlayers.push(player);
-                    state.foundPlayersCount++;
-                } else {
-                    state.notFoundPlayersCount++;
                 }
             }
 
             console.log(`Найдено игроков: ${foundPlayers.length}`);
             
-            // Показать статистику поиска
-            showSearchStats();
-            
             if (foundPlayers.length < 3) {
-                showNotification(`Найдено только ${foundPlayers.length} игроков. Нужно минимум 3.`, 'error');
+                showNotification('Найдено менее 3 игроков. Добавьте больше игроков.');
                 return;
             }
 
             // Распределение по командам (змейка)
-            // При нечетном количестве игроков разница в количестве может достигать 2 человек
             const sortedPlayers = [...foundPlayers].sort((a, b) => b.rank - a.rank);
             
             for (let i = 0; i < sortedPlayers.length; i++) {
                 let teamNum;
-                const cycle = Math.floor(i / state.teamCount) % 2;
-                const posInCycle = i % state.teamCount;
+                const cycle = Math.floor(i / 3) % 2;
+                const posInCycle = i % 3;
                 
                 if (cycle === 0) {
-                    // Прямой порядок: 1, 2, 3, ...
                     teamNum = posInCycle + 1;
                 } else {
-                    // Обратный порядок: ..., 3, 2, 1
-                    teamNum = state.teamCount - posInCycle;
+                    teamNum = 3 - posInCycle;
                 }
                 
                 sortedPlayers[i].team = teamNum;
@@ -1144,14 +1006,7 @@
             renderTeams();
             updateStats();
             
-            showNotification(`Распределено ${foundPlayers.length} игроков по ${state.teamCount} командам`);
-        }
-
-        // Показать статистику поиска
-        function showSearchStats() {
-            foundCount.textContent = state.foundPlayersCount;
-            notFoundCount.textContent = state.notFoundPlayersCount;
-            searchStats.style.display = 'block';
+            showNotification(`Распределено ${foundPlayers.length} игроков по командам`);
         }
 
         // Поиск игрока в базе данных
@@ -1185,14 +1040,13 @@
             return null;
         }
 
-        // Извлечение имени из строки (исправлено для сохранения дефисов)
+        // Извлечение имени из строки
         function extractName(line) {
             // Удаляем номера в начале (1., 2., и т.д.)
             let name = line.replace(/^\d+[\.\)]\s*/, '').trim();
             
-            // Удаляем все символы, кроме букв, пробелов, точек и дефисов
-            // Теперь разрешаем дефисы и апострофы
-            name = name.replace(/[^а-яёА-ЯЁ\s\.\-\']/g, '').trim();
+            // Удаляем все символы, кроме букв, пробелов и точек
+            name = name.replace(/[^а-яёА-ЯЁ\s\.]/g, '').trim();
             
             // Если после очистки пусто, возвращаем null
             if (!name || name.length < 2) return null;
@@ -1202,10 +1056,8 @@
 
         // Отрисовка команд
         function renderTeams() {
-            for (let teamNum = 1; teamNum <= state.teamCount; teamNum++) {
+            for (let teamNum = 1; teamNum <= 3; teamNum++) {
                 const teamList = document.getElementById(`team${teamNum}`);
-                if (!teamList) continue;
-                
                 teamList.innerHTML = '';
                 
                 const teamPlayers = state.teams[teamNum];
@@ -1232,41 +1084,21 @@
             const div = document.createElement('div');
             div.className = 'player-item';
             div.dataset.playerId = player.id;
-            div.setAttribute('draggable', 'true');
-            div.setAttribute('tabindex', '0');
-            div.setAttribute('role', 'button');
-            div.setAttribute('aria-label', `${player.name}, рейтинг: ${player.rank}, пол: ${player.gender === 'м' ? 'мужской' : 'женский'}`);
-            div.setAttribute('aria-grabbed', 'false');
             
-            // Обработчик для всех устройств
-            div.addEventListener('click', (e) => {
-                e.stopPropagation();
-                
-                // На мобильных и планшетах показываем меню выбора команды
-                if (state.isMobile || state.isTouchDevice || window.innerWidth <= 1024) {
+            // На мобильных добавляем обработчик тапа для выбора команды
+            if (state.isMobile) {
+                div.addEventListener('click', (e) => {
+                    // Предотвращаем всплытие
+                    e.stopPropagation();
+                    // На мобильных показываем меню выбора команды по тапу
                     showTeamSelectModal(player.id);
-                }
-            });
-            
-            // Обработчик клавиатуры
-            div.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    showTeamSelectModal(player.id);
-                }
-            });
-            
-            // Drag-and-drop события для десктопов
-            if (!state.isMobile && !state.isTouchDevice && window.innerWidth > 1024) {
-                div.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', player.id.toString());
-                    div.classList.add('dragging');
-                    div.setAttribute('aria-grabbed', 'true');
                 });
-                
+            } else {
+                // На десктопе добавляем drag-and-drop
+                div.draggable = true;
+                div.addEventListener('dragstart', handleDragStart);
                 div.addEventListener('dragend', () => {
                     div.classList.remove('dragging');
-                    div.setAttribute('aria-grabbed', 'false');
                 });
             }
             
@@ -1285,7 +1117,7 @@
 
         // Обновление статистики
         function updateStats() {
-            for (let teamNum = 1; teamNum <= state.teamCount; teamNum++) {
+            for (let teamNum = 1; teamNum <= 3; teamNum++) {
                 const team = state.teams[teamNum];
                 
                 const totalRank = team.reduce((sum, p) => sum + p.rank, 0);
@@ -1293,34 +1125,25 @@
                 const maleCount = team.filter(p => p.gender === 'м').length;
                 const femaleCount = team.filter(p => p.gender === 'ж').length;
                 
-                const totalElement = document.getElementById(`team${teamNum}-total`);
-                const avgElement = document.getElementById(`team${teamNum}-avg`);
-                const maleElement = document.getElementById(`team${teamNum}-male`);
-                const femaleElement = document.getElementById(`team${teamNum}-female`);
-                
-                if (totalElement) totalElement.textContent = totalRank;
-                if (avgElement) avgElement.textContent = avgRank;
-                if (maleElement) maleElement.textContent = maleCount;
-                if (femaleElement) femaleElement.textContent = femaleCount;
+                document.getElementById(`team${teamNum}-total`).textContent = totalRank;
+                document.getElementById(`team${teamNum}-avg`).textContent = avgRank;
+                document.getElementById(`team${teamNum}-male`).textContent = maleCount;
+                document.getElementById(`team${teamNum}-female`).textContent = femaleCount;
             }
         }
 
         // Копирование списков команд
         function copyTeams() {
             // Проверяем, есть ли данные для копирования
-            let totalPlayers = 0;
-            for (let teamNum = 1; teamNum <= state.teamCount; teamNum++) {
-                totalPlayers += state.teams[teamNum].length;
-            }
-            
+            const totalPlayers = state.teams[1].length + state.teams[2].length + state.teams[3].length;
             if (totalPlayers === 0) {
-                showNotification('Сначала распределите игроков по командам!', 'error');
+                showNotification('Сначала распределите игроков по командам!');
                 return;
             }
             
             let text = '';
             
-            for (let teamNum = 1; teamNum <= state.teamCount; teamNum++) {
+            for (let teamNum = 1; teamNum <= 3; teamNum++) {
                 text += `Команда ${teamNum}:\n`;
                 const teamPlayers = state.teams[teamNum];
                 
@@ -1328,7 +1151,7 @@
                     text += '(пусто)\n';
                 } else {
                     teamPlayers.forEach(player => {
-                        text += `- ${player.name} (Рейтинг: ${player.rank}, Пол: ${player.gender === 'м' ? 'М' : 'Ж'})\n`;
+                        text += `- ${player.name}\n`;
                     });
                 }
                 text += '\n';
@@ -1365,23 +1188,19 @@
                 if (successful) {
                     showNotification('Списки команд скопированы в буфер обмена!');
                 } else {
-                    showNotification('Не удалось скопировать. Попробуйте выделить и скопировать вручную.', 'error');
+                    showNotification('Не удалось скопировать. Попробуйте выделить и скопировать вручную.');
                 }
             } catch (err) {
                 console.error('Ошибка при копировании:', err);
-                showNotification('Ошибка при копировании. Попробуйте выделить и скопировать вручную.', 'error');
+                showNotification('Ошибка при копировании. Попробуйте выделить и скопировать вручную.');
             } finally {
                 document.body.removeChild(textArea);
             }
         }
 
         // Показать уведомление
-        function showNotification(message, type = 'success') {
+        function showNotification(message) {
             notification.textContent = message;
-            notification.className = 'notification';
-            if (type === 'error') {
-                notification.classList.add('error');
-            }
             notification.style.display = 'block';
             
             // Скрыть уведомление через 3 секунды
@@ -1393,12 +1212,10 @@
         // Запуск приложения
         document.addEventListener('DOMContentLoaded', init);
         
-        // Обработка изменения ориентации экрана и размера окна
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                // Перерисовываем интерфейс при изменении размера
+        // Обработка изменения ориентации экрана
+        window.addEventListener('orientationchange', function() {
+            // Добавляем небольшую задержку для перерисовки
+            setTimeout(() => {
                 renderTeams();
             }, 300);
         });

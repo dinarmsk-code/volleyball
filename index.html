@@ -1411,7 +1411,7 @@
             }
         }
 
-        // Копирование списков команд
+        // Копирование списков команд (ТОЛЬКО ИМЕНА ИГРОКОВ)
         function copyTeams() {
             const totalPlayers = state.teams[1].length + state.teams[2].length + state.teams[3].length;
             if (totalPlayers === 0) {
@@ -1419,24 +1419,21 @@
                 return;
             }
             
-            let text = '🎯 РАСПРЕДЕЛЕНИЕ КОМАНД\n\n';
-            
+            let text = '\n\n';
+
             for (let teamNum = 1; teamNum <= 3; teamNum++) {
-                text += `${teamIcons[teamNum-1]} КОМАНДА ${teamNum}:\n`;
+                text += `КОМАНДА ${teamNum}:\n`;
                 const teamPlayers = state.teams[teamNum];
                 
                 if (teamPlayers.length === 0) {
                     text += '   (нет игроков)\n';
                 } else {
+                    // Добавляем только имена игроков, без рейтингов и гендера
                     teamPlayers.forEach((player, index) => {
-                        text += `   ${index + 1}. ${player.name} (${player.rank}${player.gender === 'м' ? '♂' : '♀'})\n`;
+                        text += `   ${index + 1}. ${player.name}\n`;
                     });
                 }
-                
-                // Добавляем статистику команды
-                const totalRank = teamPlayers.reduce((sum, p) => sum + p.rank, 0);
-                const avgRank = teamPlayers.length > 0 ? (totalRank / teamPlayers.length).toFixed(1) : '0';
-                text += `   📊 Сумма рейтингов: ${totalRank} | Средний: ${avgRank}\n\n`;
+                text += '\n';
             }
             
             // Используем современный Clipboard API

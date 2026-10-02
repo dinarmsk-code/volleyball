@@ -44,7 +44,8 @@ body.light-theme {
         radial-gradient(circle at 90% 80%, rgba(76, 201, 240, 0.08) 0%, transparent 20%);
 }
 body.light-theme .team-block,
-body.light-theme .team-select-content { background: linear-gradient(145deg, #ffffff, #f0f4f8); }
+body.light-theme .team-select-content,
+body.light-theme .disambig-content { background: linear-gradient(145deg, #ffffff, #f0f4f8); }
 body.light-theme .player-item { background: linear-gradient(135deg, #f7fafc, #edf2f7); color: var(--text); }
 body.light-theme .player-name { color: var(--text); }
 body.light-theme textarea { background: rgba(255, 255, 255, 0.9); color: var(--text); }
@@ -167,12 +168,7 @@ h2::after {
 }
 .team-count-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
 
-.options-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-}
+.options-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
 .option-toggle {
     flex: 1;
     min-width: 140px;
@@ -254,7 +250,6 @@ button.reset-btn { background: linear-gradient(135deg, var(--border), var(--pane
 .copy-split { display: flex; gap: 8px; }
 .copy-split button { flex: 1; padding: 12px; font-size: 0.85rem; min-height: 48px; }
 
-/* Сохранённые расклады */
 .layouts-box {
     background: rgba(27, 38, 59, 0.6);
     border: 1px solid var(--border);
@@ -506,11 +501,7 @@ button.reset-btn { background: linear-gradient(135deg, var(--border), var(--pane
 .summary-value { font-weight: 800; font-size: 1.1rem; color: var(--accent); }
 .summary-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
 
-.search-box {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-}
+.search-box { display: flex; gap: 8px; margin-bottom: 12px; }
 .search-box input {
     flex: 1;
     padding: 10px 14px;
@@ -550,6 +541,7 @@ button.reset-btn { background: linear-gradient(135deg, var(--border), var(--pane
     color: var(--muted);
     line-height: 1.5;
     border-left: 4px solid var(--accent);
+    word-break: break-word;
 }
 .info-box strong { color: var(--accent); }
 .info-box kbd {
@@ -560,6 +552,8 @@ button.reset-btn { background: linear-gradient(135deg, var(--border), var(--pane
     font-size: 0.8rem;
     font-family: monospace;
 }
+.info-box.error-box { border-left-color: var(--danger); }
+.info-box.error-box strong { color: var(--danger); }
 
 .mobile-hint {
     background: linear-gradient(135deg, rgba(27, 38, 59, 0.8), rgba(13, 27, 42, 0.8));
@@ -575,7 +569,8 @@ button.reset-btn { background: linear-gradient(135deg, var(--border), var(--pane
 }
 body.touch-device .mobile-hint { display: block; }
 
-.team-select-modal {
+.team-select-modal,
+.disambig-modal {
     position: fixed;
     inset: 0;
     background-color: rgba(13, 27, 42, 0.95);
@@ -587,16 +582,22 @@ body.touch-device .mobile-hint { display: block; }
     backdrop-filter: blur(5px);
     animation: fadeIn 0.3s ease-out;
 }
-.team-select-content {
+.disambig-modal { z-index: 2100; }
+.team-select-content,
+.disambig-content {
     background: linear-gradient(145deg, var(--panel), var(--bg));
     border-radius: 15px;
     padding: 22px;
     width: 100%;
-    max-width: 400px;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
     border: 1px solid var(--border);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
-.team-select-title { color: var(--text); font-size: 1.15rem; margin-bottom: 15px; text-align: center; font-weight: 700; }
+.team-select-title,
+.disambig-title { color: var(--text); font-size: 1.15rem; margin-bottom: 12px; text-align: center; font-weight: 700; }
+.disambig-subtitle { color: var(--muted); font-size: 0.85rem; text-align: center; margin-bottom: 15px; }
 .team-select-options { display: flex; flex-direction: column; gap: 10px; }
 .team-select-btn {
     padding: 14px;
@@ -617,6 +618,42 @@ body.touch-device .mobile-hint { display: block; }
 .team-select-btn[data-team="3"] { background: linear-gradient(135deg, var(--accent3), #560bad); color: white; }
 .team-select-btn:active { transform: scale(0.98); }
 .team-select-btn.cancel { background: linear-gradient(135deg, var(--border), var(--panel)); color: var(--muted); margin-top: 6px; box-shadow: none; }
+
+.disambig-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(65, 90, 119, 0.3);
+}
+.disambig-row:last-of-type { border-bottom: none; }
+.disambig-input {
+    flex: 0 0 100px;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.disambig-row select {
+    flex: 1;
+    padding: 8px 10px;
+    background: rgba(13, 27, 42, 0.7);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.85rem;
+}
+.disambig-row select:focus { outline: none; border-color: var(--accent); }
+.disambig-actions { display: flex; gap: 10px; margin-top: 15px; }
+.disambig-actions button {
+    flex: 1;
+    padding: 12px;
+    min-height: 46px;
+    font-size: 0.95rem;
+}
+.disambig-btn-skip { background: linear-gradient(135deg, var(--border), var(--panel)) !important; color: var(--muted) !important; }
 
 .swipe-hint { color: var(--accent); font-size: 0.85rem; font-weight: 400; display: none; }
 body:not(.touch-device) .swipe-hint { display: inline; }
@@ -648,6 +685,8 @@ body:not(.touch-device) .swipe-hint { display: inline; }
     .stat-value { font-size: 0.95rem; }
     .stat-label { font-size: 0.6rem; }
     .summary-box { grid-template-columns: repeat(2, 1fr); }
+    .disambig-row { flex-direction: column; align-items: stretch; gap: 6px; }
+    .disambig-input { flex: none; }
 }
 @media (max-width: 360px) {
     h1 { font-size: 1.4rem; }
@@ -694,8 +733,8 @@ body:not(.touch-device) .swipe-hint { display: inline; }
 
             <textarea id="playerInput" placeholder="Введите фамилии игроков (каждый с новой строки)
 Например:
-Жигалин
-Дорофеев В.А.
+1. Жигалин
+2. Дорофеев В.А.
 Романова Е.Э."></textarea>
 
             <div class="button-group">
@@ -726,9 +765,12 @@ body:not(.touch-device) .swipe-hint { display: inline; }
             <div class="info-box">
                 <strong>💡 Горячие клавиши:</strong> <kbd>Ctrl+Enter</kbd> — распределить, <kbd>Ctrl+Z</kbd> — отменить,
                 <kbd>Ctrl+Y</kbd> — вернуть, <kbd>Ctrl+S</kbd> — сохранить расклад.<br>
-                <strong>📌 Блокировка:</strong> нажмите на замочек у игрока, чтобы закрепить его в команде.
-                <br><strong>↔ Swap:</strong> перетащите игрока на игрока другой команды, чтобы поменять их местами.
+                <strong>📌 Блокировка:</strong> нажмите на замочек у игрока, чтобы закрепить его в команде.<br>
+                <strong>↔ Swap:</strong> перетащите игрока на игрока другой команды, чтобы поменять их местами.<br>
+                <strong>🔍 Умный поиск:</strong> пробелы, точки, инициалы, цифры в начале и опечатки — учитываются.
             </div>
+
+            <div class="info-box error-box" id="unmatchedInfo" style="display:none;"></div>
         </div>
 
         <div class="teams-section">
@@ -765,6 +807,18 @@ body:not(.touch-device) .swipe-hint { display: inline; }
         <div class="team-select-content">
             <div class="team-select-title" id="teamSelectTitle">Переместить игрока</div>
             <div class="team-select-options" id="teamSelectOptions"></div>
+        </div>
+    </div>
+
+    <div class="disambig-modal" id="disambigModal" role="dialog" aria-modal="true">
+        <div class="disambig-content">
+            <div class="disambig-title">🤔 Уточните игроков</div>
+            <div class="disambig-subtitle">Не удалось однозначно определить следующих игроков. Выберите нужного или пропустите.</div>
+            <div id="disambigList"></div>
+            <div class="disambig-actions">
+                <button class="disambig-btn-skip" id="disambigSkipAll">Пропустить все</button>
+                <button id="disambigDone">Готово</button>
+            </div>
         </div>
     </div>
 
@@ -835,27 +889,124 @@ const playersDB = [
     { name: 'Шепелев В.М.',      rank: 13, gender: 'м' }
 ];
 
-const norm = s => s.toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ').trim();
-const playerIndex = new Map();
-(function() {
-    const surnameMap = new Map();
-    for (const p of playersDB) {
-        playerIndex.set(norm(p.name), p);
-        if (p.aliases) p.aliases.forEach(a => playerIndex.set(norm(a), p));
-        const s = norm(p.name).split(' ')[0];
-        if (!surnameMap.has(s)) surnameMap.set(s, new Set());
-        surnameMap.get(s).add(p.name);
+/* ================= УМНЫЙ ПОИСК ================= */
+const TRANSLIT = {
+    'a':'а','b':'в','c':'с','d':'д','e':'е','f':'ф','g':'г','h':'н','i':'и','j':'й',
+    'k':'к','l':'л','m':'м','n':'п','o':'о','p':'р','q':'к','r':'р','s':'с','t':'т',
+    'u':'и','v':'в','w':'в','x':'х','y':'у','z':'з'
+};
+
+function normalizeName(s) {
+    if (!s) return '';
+    let out = '';
+    for (const ch of s.toLowerCase()) {
+        const mapped = TRANSLIT[ch];
+        out += (mapped !== undefined ? mapped : ch);
     }
-    surnameMap.forEach((names, s) => {
-        if (names.size === 1 && !playerIndex.has(s)) {
-            playerIndex.set(s, playersDB.find(x => x.name === [...names][0]));
+    // Убираем ё→е, й→и для устойчивости
+    out = out.replace(/ё/g, 'е').replace(/й/g, 'и');
+    return out.replace(/[^а-я]/g, '');
+}
+
+function levenshtein(a, b) {
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
+    if (Math.abs(a.length - b.length) > 3) return Math.max(a.length, b.length);
+    const m = a.length, n = b.length;
+    let prev = Array.from({ length: n + 1 }, (_, i) => i);
+    let curr = new Array(n + 1);
+    for (let i = 1; i <= m; i++) {
+        curr[0] = i;
+        for (let j = 1; j <= n; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
         }
+        [prev, curr] = [curr, prev];
+    }
+    return prev[n];
+}
+
+const dbIndex = [];
+playersDB.forEach(p => {
+    dbIndex.push({ player: p, full: normalizeName(p.name), source: 'name' });
+    if (p.aliases) p.aliases.forEach(a => {
+        dbIndex.push({ player: p, full: normalizeName(a), source: 'alias' });
     });
-})();
-const findPlayer = name => playerIndex.get(norm(name)) || null;
+});
+
+function dedupPlayers(hits) {
+    const seen = new Set();
+    const out = [];
+    for (const h of hits) {
+        if (seen.has(h.player.name)) continue;
+        seen.add(h.player.name);
+        out.push(h.player);
+    }
+    return out;
+}
+
+function findPlayerSmart(inputName) {
+    const q = normalizeName(inputName);
+    if (!q || q.length < 2) return { player: null, reason: 'empty' };
+
+    // 1. Точное совпадение
+    const exactHits = dbIndex.filter(e => e.full === q);
+    const exactUnique = dedupPlayers(exactHits);
+    if (exactUnique.length === 1) return { player: exactUnique[0], reason: 'exact' };
+    if (exactUnique.length > 1) {
+        return { player: null, reason: 'ambiguous', candidates: exactUnique };
+    }
+
+    // 2. Префикс: q — начало full, разница ≤ 3
+    const prefixHits = dbIndex.filter(e => {
+        const diff = e.full.length - q.length;
+        return diff >= 0 && diff <= 3 && e.full.startsWith(q);
+    });
+    const prefixUnique = dedupPlayers(prefixHits);
+    if (prefixUnique.length === 1) return { player: prefixUnique[0], reason: 'prefix' };
+    if (prefixUnique.length > 1) {
+        return { player: null, reason: 'ambiguous', candidates: prefixUnique };
+    }
+
+    // 3. Обратный префикс: full — начало q, разница ≤ 2
+    const revHits = dbIndex.filter(e => {
+        const diff = q.length - e.full.length;
+        return diff > 0 && diff <= 2 && q.startsWith(e.full);
+    });
+    const revUnique = dedupPlayers(revHits);
+    if (revUnique.length === 1) return { player: revUnique[0], reason: 'rev-prefix' };
+    if (revUnique.length > 1) {
+        return { player: null, reason: 'ambiguous', candidates: revUnique };
+    }
+
+    // 4. Левенштейн
+    const maxDist = q.length >= 7 ? 2 : (q.length >= 5 ? 1 : 0);
+    if (maxDist === 0) return { player: null, reason: 'not-found' };
+
+    const fuzzy = [];
+    const seen = new Set();
+    for (const e of dbIndex) {
+        if (seen.has(e.player.name)) continue;
+        const d = levenshtein(q, e.full);
+        if (d <= maxDist) {
+            fuzzy.push({ entry: e, dist: d });
+            seen.add(e.player.name);
+        }
+    }
+    if (fuzzy.length === 0) return { player: null, reason: 'not-found' };
+    if (fuzzy.length === 1) return { player: fuzzy[0].entry.player, reason: 'fuzzy' };
+    fuzzy.sort((a, b) => a.dist - b.dist);
+    if (fuzzy[0].dist < fuzzy[1].dist) return { player: fuzzy[0].entry.player, reason: 'fuzzy' };
+    return { player: null, reason: 'ambiguous', candidates: fuzzy.map(f => f.entry.player) };
+}
+
 function extractName(line) {
-    let n = line.replace(/^\d+[\.\)]\s*/, '').trim();
-    n = n.replace(/[^а-яёА-ЯЁ\s\.\-]/g, '').trim();
+    if (!line) return null;
+    let n = line.replace(/^\d+[\.\)\s\-]+/, '').trim();
+    n = n.replace(/\([^)]*\)/g, ' ').replace(/\[[^\]]*\]/g, ' ');
+    n = n.replace(/[^а-яёА-ЯЁa-zA-Z\s\.\-]/g, '').trim();
+    n = n.replace(/\s+/g, ' ');
     return n.length >= 2 ? n : null;
 }
 
@@ -894,6 +1045,10 @@ const notification = $('notification');
 const teamSelectModal = $('teamSelectModal');
 const teamSelectTitle = $('teamSelectTitle');
 const teamSelectOptions = $('teamSelectOptions');
+const disambigModal = $('disambigModal');
+const disambigList = $('disambigList');
+const disambigDone = $('disambigDone');
+const disambigSkipAll = $('disambigSkipAll');
 const teamsContainer = $('teamsContainer');
 const balanceBar = $('balanceBar');
 const balanceLabel = $('balanceLabel');
@@ -906,6 +1061,7 @@ const layoutSelect = $('layoutSelect');
 const saveLayoutBtn = $('saveLayoutBtn');
 const loadLayoutBtn = $('loadLayoutBtn');
 const deleteLayoutBtn = $('deleteLayoutBtn');
+const unmatchedInfo = $('unmatchedInfo');
 const teamCountBtns = document.querySelectorAll('.team-count-btn');
 
 /* ================= УТИЛИТЫ ================= */
@@ -916,6 +1072,10 @@ function notify(msg, type = 'success') {
     notification.style.display = 'block';
     clearTimeout(notifTimer);
     notifTimer = setTimeout(() => { notification.style.display = 'none'; }, 3200);
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 function saveLocal() {
@@ -1030,22 +1190,17 @@ function renderTeamTemplates() {
             </div>`;
         teamsContainer.insertAdjacentHTML('beforeend', html);
     }
-    // Team name inputs
     document.querySelectorAll('.team-name-input').forEach(inp => {
         inp.addEventListener('change', e => {
             const t = parseInt(e.target.dataset.team);
             state.teamNames[t] = e.target.value.trim() || `Команда ${t}`;
             e.target.value = state.teamNames[t];
             saveLocal();
-            renderTeamSelectOptions();
+            setupTeamSelectOptions();
         });
     });
     setupTeamLists();
     setupTeamSelectOptions();
-}
-
-function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 function renderTeams() {
@@ -1093,7 +1248,7 @@ function createPlayerElement(player) {
             <span class="player-gender ${player.gender === 'м' ? 'male' : 'female'}">
                 ${player.gender === 'м' ? 'М' : 'Ж'}
             </span>
-            <button class="player-lock ${player.locked ? 'active' : ''}" 
+            <button class="player-lock ${player.locked ? 'active' : ''}"
                     title="${player.locked ? 'Разблокировать' : 'Закрепить в команде'}"
                     data-player-id="${player.id}">
                 ${player.locked ? '🔒' : '🔓'}
@@ -1226,7 +1381,6 @@ function handleDrop(e) {
     e.currentTarget.classList.remove('drag-over');
     if (!draggedPlayerId) return;
 
-    // Swap если дропнули на другого игрока
     const targetItem = e.target.closest('.player-item');
     if (targetItem) {
         const targetId = parseInt(targetItem.dataset.playerId);
@@ -1242,7 +1396,7 @@ function handleDrop(e) {
     draggedPlayerId = null;
 }
 
-/* ================= МОДАЛКА ================= */
+/* ================= МОДАЛКА ПЕРЕМЕЩЕНИЯ ================= */
 function setupTeamSelectOptions() {
     teamSelectOptions.innerHTML = '';
     for (let i = 1; i <= state.teamCount; i++) {
@@ -1262,7 +1416,6 @@ function setupTeamSelectOptions() {
     cancel.addEventListener('click', closeModal);
     teamSelectOptions.appendChild(cancel);
 }
-function renderTeamSelectOptions() { setupTeamSelectOptions(); }
 
 function showTeamSelectModal(playerId) {
     const p = state.players.find(x => x.id === playerId);
@@ -1275,6 +1428,49 @@ function showTeamSelectModal(playerId) {
 function closeModal() {
     teamSelectModal.style.display = 'none';
     state.selectedPlayer = null;
+}
+
+/* ================= МОДАЛКА НЕОДНОЗНАЧНОСТЕЙ ================= */
+function askUserForAmbiguous(pending) {
+    return new Promise(resolve => {
+        disambigList.innerHTML = '';
+        const choices = new Map();
+
+        pending.forEach((item, idx) => {
+            const row = document.createElement('div');
+            row.className = 'disambig-row';
+            const opts = item.candidates
+                .map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} (${c.rank}, ${c.gender})</option>`)
+                .join('');
+            row.innerHTML = `
+                <div class="disambig-input" title="${escapeHtml(item.inputName)}">"${escapeHtml(item.inputName)}"</div>
+                <select data-idx="${idx}">
+                    <option value="">— Пропустить —</option>
+                    ${opts}
+                </select>
+            `;
+            disambigList.appendChild(row);
+            const sel = row.querySelector('select');
+            sel.addEventListener('change', e => {
+                choices.set(idx, e.target.value || null);
+            });
+        });
+
+        disambigModal.style.display = 'flex';
+
+        const finish = (skipAll) => {
+            disambigModal.style.display = 'none';
+            disambigDone.removeEventListener('click', onDone);
+            disambigSkipAll.removeEventListener('click', onSkip);
+            if (skipAll) choices.clear();
+            resolve(choices);
+        };
+        const onDone = () => finish(false);
+        const onSkip = () => finish(true);
+
+        disambigDone.addEventListener('click', onDone);
+        disambigSkipAll.addEventListener('click', onSkip);
+    });
 }
 
 /* ================= ПЕРЕМЕЩЕНИЕ / SWAP ================= */
@@ -1319,10 +1515,7 @@ function distributeGreedy(players) {
     const locked = state.keepLocks ? players.filter(p => p.locked && p.team && state.teams[p.team]) : [];
     const free = players.filter(p => !locked.includes(p));
 
-    locked.forEach(p => {
-        p.team = p.team;
-        teams[p.team].push(p);
-    });
+    locked.forEach(p => { teams[p.team].push(p); });
 
     const sumOf = t => teams[t].reduce((s, p) => s + p.rank, 0);
 
@@ -1347,50 +1540,74 @@ function distributeGreedy(players) {
     return teams;
 }
 
-/* ================= ЗАПУСК ================= */
-function startDistribution() {
+/* ================= ЗАПУСК РАСПРЕДЕЛЕНИЯ ================= */
+async function startDistribution() {
     const text = playerInput.value.trim();
     if (!text) { notify('Введите список игроков', 'error'); return; }
 
     startBtn.style.animation = 'pulse 0.5s ease';
     setTimeout(() => { startBtn.style.animation = ''; }, 500);
 
-    // Сохраняем блокировки и команды для keepLocks
     const prevTeams = {};
     state.players.forEach(p => {
-        if (p.locked && p.team) {
-            prevTeams[p.name] = p.team;
-        }
+        if (p.locked && p.team) prevTeams[p.name] = p.team;
     });
 
     state.players = [];
     state.teams = { 1: [], 2: [], 3: [] };
     state.nextId = 1;
 
-    const seen = new Set();
-    let dup = 0, notFound = 0;
+    const found = [];
+    const pending = [];
+    const notFound = [];
 
     for (const line of text.split('\n')) {
         const name = extractName(line.trim());
         if (!name) continue;
-        const data = findPlayer(name);
-        if (!data) { notFound++; continue; }
-        if (seen.has(data.name)) { dup++; continue; }
-        seen.add(data.name);
-        const keepTeam = state.keepLocks ? prevTeams[data.name] : null;
-        state.players.push({
-            id: state.nextId++,
-            name: data.name,
-            rank: data.rank,
-            gender: data.gender,
-            team: keepTeam || null,
-            locked: !!keepTeam
+        const result = findPlayerSmart(name);
+        if (result.player) {
+            found.push({ player: result.player, inputName: name });
+        } else if (result.reason === 'ambiguous') {
+            pending.push({ inputName: name, candidates: result.candidates });
+        } else {
+            notFound.push(name);
+        }
+    }
+
+    if (pending.length > 0) {
+        const choices = await askUserForAmbiguous(pending);
+        pending.forEach((item, idx) => {
+            const chosenName = choices.get(idx);
+            if (chosenName) {
+                const p = playersDB.find(x => x.name === chosenName);
+                if (p) found.push({ player: p, inputName: item.inputName });
+            }
         });
     }
 
-    if (state.players.length === 0) { notify('Не найдено ни одного известного игрока', 'error'); return; }
+    const seen = new Set();
+    let dup = 0;
+    found.forEach(item => {
+        if (seen.has(item.player.name)) { dup++; return; }
+        seen.add(item.player.name);
+        const keepTeam = state.keepLocks ? prevTeams[item.player.name] : null;
+        state.players.push({
+            id: state.nextId++,
+            name: item.player.name,
+            rank: item.player.rank,
+            gender: item.player.gender,
+            team: keepTeam || null,
+            locked: !!keepTeam
+        });
+    });
+
+    if (state.players.length === 0) {
+        notify('Не найдено ни одного игрока', 'error');
+        renderUnmatchedInfo(notFound, []);
+        return;
+    }
     if (state.players.length < state.teamCount) {
-        notify(`Найдено ${state.players.length} игроков, нужно минимум ${state.teamCount}`, 'error');
+        notify(`Найдено ${state.players.length}, нужно минимум ${state.teamCount}`, 'error');
         return;
     }
 
@@ -1403,10 +1620,11 @@ function startDistribution() {
 
     let msg = `Распределено ${state.players.length}`;
     if (dup) msg += ` · дублей: ${dup}`;
-    if (notFound) msg += ` · не найдено: ${notFound}`;
-    notify(msg);
+    if (notFound.length) msg += ` · не найдено: ${notFound.length}`;
+    notify(msg, notFound.length ? 'warning' : 'success');
 
-    // Конфетти при идеальном балансе
+    renderUnmatchedInfo(notFound, []);
+
     const avgs = [];
     for (let i = 1; i <= state.teamCount; i++) {
         const t = state.teams[i];
@@ -1415,6 +1633,23 @@ function startDistribution() {
     if (avgs.length === state.teamCount && Math.max(...avgs) - Math.min(...avgs) < 0.5) {
         setTimeout(launchConfetti, 400);
     }
+}
+
+function renderUnmatchedInfo(notFound, ambiguous) {
+    if (!notFound.length && !ambiguous.length) {
+        unmatchedInfo.style.display = 'none';
+        return;
+    }
+    let html = '<strong>⚠ Не удалось обработать:</strong><br>';
+    if (notFound.length) {
+        html += `<b>Не найдено (${notFound.length}):</b> ${notFound.map(escapeHtml).join(', ')}`;
+    }
+    if (ambiguous.length) {
+        if (notFound.length) html += '<br>';
+        html += `<b>Пропущено неоднозначных (${ambiguous.length}):</b> ${ambiguous.map(escapeHtml).join(', ')}`;
+    }
+    unmatchedInfo.innerHTML = html;
+    unmatchedInfo.style.display = 'block';
 }
 
 /* ================= КОПИРОВАНИЕ / ЭКСПОРТ ================= */
@@ -1537,7 +1772,6 @@ function loadLayout() {
     state.balanceGender = !!d.balanceGender;
     state.keepLocks = !!d.keepLocks;
 
-    // UI
     teamCountBtns.forEach(btn => btn.classList.toggle('active', parseInt(btn.dataset.count) === state.teamCount));
     genderToggle.classList.toggle('active', state.balanceGender);
     lockToggle.classList.toggle('active', state.keepLocks);
@@ -1592,6 +1826,7 @@ function resetAll() {
     state.history = [];
     state.historyIdx = -1;
     playerInput.value = '';
+    unmatchedInfo.style.display = 'none';
     try { localStorage.removeItem('tdp_state'); } catch (e) {}
     renderTeams();
     updateStats();
@@ -1691,10 +1926,12 @@ function init() {
         else if (mod && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); redo(); }
         else if (mod && e.key === 'Enter') { e.preventDefault(); startDistribution(); }
         else if (mod && e.key === 's') { e.preventDefault(); saveLayout(); }
-        else if (e.key === 'Escape') closeModal();
+        else if (e.key === 'Escape') {
+            closeModal();
+            if (disambigModal.style.display === 'flex') disambigSkipAll.click();
+        }
     });
 
-    // Восстановление
     const restored = loadLocal();
     if (restored) {
         teamCountBtns.forEach(btn => btn.classList.toggle('active', parseInt(btn.dataset.count) === state.teamCount));
@@ -1709,7 +1946,6 @@ function init() {
         pushHistory();
     }
 
-    // Защита от двойного тапа
     let lastTouchEnd = 0;
     document.addEventListener('touchend', e => {
         if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;

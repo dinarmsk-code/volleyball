@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Team Distributor Pro</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+:root {
+    --bg: #0d1b2a;
+    --panel: #1b263b;
+    --border: #415a77;
+    --text: #f8f9fa;
+    --muted: #a3b1cc;
+    --accent: #ff9e00;
+    --accent2: #4cc9f0;
+    --accent3: #9d4edd;
+    --success: #06d6a0;
+    --danger: #ef476f;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 15px;
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 158, 0, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(76, 201, 240, 0.05) 0%, transparent 20%);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+}
+
+body.light-theme {
+    --bg: #f0f4f8;
+    --panel: #ffffff;
+    --border: #cbd5e0;
+    --text: #1a202c;
+    --muted: #4a5568;
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 158, 0, 0.08) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(76, 201, 240, 0.08) 0%, transparent 20%);
+}
+body.light-theme .team-block,
+body.light-theme .team-select-content { background: linear-gradient(145deg, #ffffff, #f0f4f8); }
+body.light-theme .player-item { background: linear-gradient(135deg, #f7fafc, #edf2f7); color: var(--text); }
+body.light-theme .player-name { color: var(--text); }
+body.light-theme textarea { background: rgba(255, 255, 255, 0.9); color: var(--text); }
+body.light-theme .players-list { background: rgba(255, 255, 255, 0.5); }
+body.light-theme .info-box,
+body.light-theme .mobile-hint { background: linear-gradient(135deg, #ffffff, #edf2f7); }
+body.light-theme .team-stats { background: rgba(255, 255, 255, 0.85); }
+body.light-theme .stat-item { background: rgba(240, 244, 248, 0.9); }
+body.light-theme .team-select-btn.cancel,
+body.light-theme .reset-btn { color: var(--text); }
+
+.container { max-width: 100%; margin: 0 auto; animation: fadeIn 0.5s ease-out; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { transform: translateX(-10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+@keyframes balancePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 158, 0, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(255, 158, 0, 0); }
+}
+@keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes ripple { 0% { transform: scale(0, 0); opacity: 0.5; } 100% { transform: scale(40, 40); opacity: 0; } }
+@keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+@keyframes lockPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+}
+header::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--accent), #ffd166);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.subtitle { color: var(--muted); font-size: 1rem; font-weight: 500; }
+
+.top-toolbar {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.icon-btn {
+    padding: 8px 14px;
+    background: rgba(27, 38, 59, 0.7);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    width: auto;
+    box-shadow: none;
+}
+.icon-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+.icon-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.app-container { display: flex; flex-direction: column; gap: 25px; margin-bottom: 30px; }
+.input-section, .teams-section { width: 100%; }
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+}
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 100px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.team-count-selector { display: flex; gap: 10px; margin-bottom: 15px; }
+.team-count-btn {
+    flex: 1;
+    padding: 12px 10px;
+    background: rgba(27, 38, 59, 0.7);
+    border: 2px solid var(--border);
+    color: var(--muted);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.2s;
+    min-height: 50px;
+    box-shadow: none;
+    width: 100%;
+}
+.team-count-btn.active {
+    background: linear-gradient(135deg, var(--accent), #ff6d00);
+    border-color: var(--accent);
+    color: #0d1b2a;
+    box-shadow: 0 4px 15px rgba(255, 158, 0, 0.3);
+}
+.team-count-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+.options-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+.option-toggle {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    background: rgba(27, 38, 59, 0.6);
+    border: 2px solid var(--border);
+    color: var(--muted);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    min-height: 44px;
+    width: auto;
+    box-shadow: none;
+}
+.option-toggle.active {
+    background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(157, 78, 221, 0.2));
+    border-color: var(--accent2);
+    color: var(--text);
+}
+.option-toggle:hover { border-color: var(--accent2); }
+
+textarea {
+    width: 100%;
+    height: 180px;
+    background-color: rgba(27, 38, 59, 0.7);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255, 158, 0, 0.2); }
+
+.button-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+
+button:not(.team-count-btn):not(.option-toggle):not(.icon-btn) {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, var(--accent), #ff6d00);
+    color: #0d1b2a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    width: 100%;
+    min-height: 54px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 158, 0, 0.3);
+}
+button:not(.team-count-btn):not(.option-toggle):not(.icon-btn)::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 5px; height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0; border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+    pointer-events: none;
+}
+button:not(.team-count-btn):not(.option-toggle):not(.icon-btn):active::after { animation: ripple 1s ease-out; }
+button:not(.team-count-btn):not(.option-toggle):not(.icon-btn):hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 158, 0, 0.4); }
+
+button.copy-btn { background: linear-gradient(135deg, var(--accent2), #0096c7) !important; box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3) !important; }
+button.reset-btn { background: linear-gradient(135deg, var(--border), var(--panel)) !important; color: var(--muted) !important; box-shadow: 0 4px 15px rgba(65, 90, 119, 0.3) !important; }
+
+.copy-split { display: flex; gap: 8px; }
+.copy-split button { flex: 1; padding: 12px; font-size: 0.85rem; min-height: 48px; }
+
+/* Сохранённые расклады */
+.layouts-box {
+    background: rgba(27, 38, 59, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 15px;
+}
+.layouts-box h3 { font-size: 0.95rem; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+.layouts-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.layouts-row input,
+.layouts-row select {
+    flex: 1;
+    padding: 10px 12px;
+    background: rgba(13, 27, 42, 0.7);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    min-width: 0;
+}
+.layouts-row input:focus,
+.layouts-row select:focus { outline: none; border-color: var(--accent); }
+.layouts-row button {
+    padding: 10px 14px !important;
+    font-size: 0.85rem !important;
+    min-height: 40px !important;
+    width: auto !important;
+    flex-shrink: 0;
+}
+.mini-btn {
+    padding: 8px 12px;
+    background: rgba(65, 90, 119, 0.6);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    width: auto;
+    min-height: 36px;
+}
+.mini-btn:hover { background: rgba(65, 90, 119, 0.9); border-color: var(--accent); }
+.mini-btn.danger:hover { background: rgba(239, 71, 111, 0.3); border-color: var(--danger); }
+.mini-btn.primary { background: linear-gradient(135deg, var(--accent), #ff6d00); color: #0d1b2a; border: none; }
+.mini-btn.primary:hover { box-shadow: 0 4px 15px rgba(255, 158, 0, 0.4); }
+
+.teams-container { display: flex; flex-direction: column; gap: 20px; }
+
+.team-block {
+    width: 100%;
+    background: linear-gradient(145deg, var(--panel), var(--bg));
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: slideIn 0.5s ease-out both;
+}
+.team-block:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4); }
+.team-block[data-team="1"] { border-top: 4px solid var(--accent); }
+.team-block[data-team="2"] { border-top: 4px solid var(--accent2); }
+.team-block[data-team="3"] { border-top: 4px solid var(--accent3); }
+
+.team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(65, 90, 119, 0.5);
+    gap: 8px;
+}
+.team-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+}
+.team-icon { font-size: 1.2rem; flex-shrink: 0; }
+.team-name-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text);
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 4px 6px;
+    border-radius: 6px;
+    min-width: 0;
+    width: 100%;
+    max-width: 180px;
+    transition: all 0.2s;
+}
+.team-name-input:hover { background: rgba(65, 90, 119, 0.2); border-color: rgba(65, 90, 119, 0.4); }
+.team-name-input:focus { outline: none; background: rgba(13, 27, 42, 0.6); border-color: var(--accent); }
+
+.player-count {
+    background: linear-gradient(135deg, var(--accent), #ff6d00);
+    color: #0d1b2a;
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 3px 10px rgba(255, 158, 0, 0.3);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.players-list {
+    flex-grow: 1;
+    min-height: 240px;
+    max-height: 340px;
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    background: rgba(13, 27, 42, 0.5);
+    scroll-behavior: smooth;
+}
+.players-list.drag-over {
+    border-color: var(--accent);
+    background-color: rgba(255, 158, 0, 0.1);
+    border-style: solid;
+}
+.players-list::-webkit-scrollbar { width: 8px; }
+.players-list::-webkit-scrollbar-track { background: rgba(65, 90, 119, 0.2); border-radius: 4px; }
+.players-list::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--accent), #ff6d00); border-radius: 4px; }
+
+.empty-hint { text-align: center; color: var(--muted); margin-top: 50px; padding: 20px; }
+
+.player-item {
+    background: linear-gradient(135deg, rgba(27, 38, 59, 0.8), rgba(13, 27, 42, 0.8));
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s;
+    position: relative;
+}
+.player-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%; width: 4px;
+    background: var(--accent);
+    border-radius: 4px 0 0 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.player-item:hover::before { opacity: 1; }
+.player-item:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); border-color: var(--accent); }
+.player-item:active { transform: scale(0.98); }
+.player-item.dragging { opacity: 0.5; box-shadow: 0 0 20px rgba(255, 158, 0, 0.4); }
+.player-item.locked { border-color: var(--accent); background: linear-gradient(135deg, rgba(255, 158, 0, 0.15), rgba(255, 109, 0, 0.1)); }
+.player-item.filtered-out { display: none; }
+
+.player-name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+.player-details { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.player-rating {
+    background: linear-gradient(135deg, var(--accent), #ff6d00);
+    color: #0d1b2a;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    min-width: 30px;
+    text-align: center;
+}
+.player-gender {
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    min-width: 24px;
+    text-align: center;
+}
+.player-gender.male { background: linear-gradient(135deg, var(--accent2), #0096c7); color: white; }
+.player-gender.female { background: linear-gradient(135deg, var(--accent3), #560bad); color: white; }
+.player-lock {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 4px;
+    opacity: 0.3;
+    transition: all 0.2s;
+    width: auto;
+    min-height: auto;
+    box-shadow: none;
+    color: var(--accent);
+}
+.player-lock:hover { opacity: 1; transform: scale(1.15); box-shadow: none; }
+.player-lock.active { opacity: 1; animation: lockPulse 2s infinite; }
+
+.team-stats { background: rgba(27, 38, 59, 0.8); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stat-item { display: flex; flex-direction: column; padding: 6px; background: rgba(13, 27, 42, 0.5); border-radius: 6px; border: 1px solid rgba(65, 90, 119, 0.3); text-align: center; }
+.stat-value { font-weight: 800; font-size: 1.05rem; color: var(--accent2); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+.stat-label { font-size: 0.68rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+.balance-indicator {
+    width: 100%; height: 8px;
+    background: rgba(65, 90, 119, 0.3);
+    border-radius: 4px;
+    margin: 15px 0 0 0;
+    overflow: hidden;
+}
+.balance-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; width: 0%; transition: width 0.5s ease, background 0.3s ease; }
+.balance-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-top: 5px; margin-bottom: 12px; }
+.balanced { animation: balancePulse 2s infinite; }
+
+.summary-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 8px;
+    padding: 12px;
+    background: rgba(27, 38, 59, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+.summary-item { text-align: center; }
+.summary-value { font-weight: 800; font-size: 1.1rem; color: var(--accent); }
+.summary-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
+
+.search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.search-box input {
+    flex: 1;
+    padding: 10px 14px;
+    background: rgba(27, 38, 59, 0.6);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+.search-box input:focus { outline: none; border-color: var(--accent); }
+
+.notification {
+    position: fixed;
+    bottom: 20px; left: 20px; right: 20px;
+    background: linear-gradient(135deg, #0a8754, var(--success));
+    color: white;
+    padding: 14px 22px;
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 6px 20px rgba(10, 135, 84, 0.4);
+    animation: slideUp 0.3s ease-out;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.notification.error { background: linear-gradient(135deg, #a4161a, var(--danger)); }
+.notification.warning { background: linear-gradient(135deg, #b45309, var(--accent)); }
+
+.info-box {
+    background: linear-gradient(135deg, rgba(27, 38, 59, 0.8), rgba(13, 27, 42, 0.8));
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+    border-left: 4px solid var(--accent);
+}
+.info-box strong { color: var(--accent); }
+.info-box kbd {
+    background: rgba(65, 90, 119, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.8rem;
+    font-family: monospace;
+}
+
+.mobile-hint {
+    background: linear-gradient(135deg, rgba(27, 38, 59, 0.8), rgba(13, 27, 42, 0.8));
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--accent);
+    display: none;
+    border-left: 4px solid var(--accent);
+}
+body.touch-device .mobile-hint { display: block; }
+
+.team-select-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(13, 27, 42, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
+.team-select-content {
+    background: linear-gradient(145deg, var(--panel), var(--bg));
+    border-radius: 15px;
+    padding: 22px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.team-select-title { color: var(--text); font-size: 1.15rem; margin-bottom: 15px; text-align: center; font-weight: 700; }
+.team-select-options { display: flex; flex-direction: column; gap: 10px; }
+.team-select-btn {
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent), #ff6d00);
+    color: #0d1b2a;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(255, 158, 0, 0.3);
+    width: 100%;
+    min-height: auto;
+}
+.team-select-btn[data-team="2"] { background: linear-gradient(135deg, var(--accent2), #0096c7); }
+.team-select-btn[data-team="3"] { background: linear-gradient(135deg, var(--accent3), #560bad); color: white; }
+.team-select-btn:active { transform: scale(0.98); }
+.team-select-btn.cancel { background: linear-gradient(135deg, var(--border), var(--panel)); color: var(--muted); margin-top: 6px; box-shadow: none; }
+
+.swipe-hint { color: var(--accent); font-size: 0.85rem; font-weight: 400; display: none; }
+body:not(.touch-device) .swipe-hint { display: inline; }
+
+@media (min-width: 768px) {
+    body { padding: 25px; }
+    .app-container { flex-direction: row; gap: 35px; }
+    .input-section { flex: 1; min-width: 340px; max-width: 420px; }
+    .teams-section { flex: 2; }
+    .teams-container { flex-direction: row; flex-wrap: wrap; }
+    .team-block { min-width: calc(50% - 10px); flex: 1 1 calc(50% - 10px); }
+    .button-group { flex-direction: row; }
+    .button-group > button { flex: 1; }
+    .copy-split { flex-direction: column; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+    .container { max-width: 1400px; }
+    .team-block { min-width: calc(33.333% - 14px); flex: 1 1 calc(33.333% - 14px); }
+    h1 { font-size: 2.5rem; }
+}
+@media (max-width: 767px) {
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.25rem; }
+    .player-item { padding: 12px; }
+    .player-name { font-size: 0.9rem; }
+    .team-select-btn { padding: 16px; font-size: 1.05rem; }
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    .stat-value { font-size: 0.95rem; }
+    .stat-label { font-size: 0.6rem; }
+    .summary-box { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 360px) {
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.15rem; }
+    .player-name { font-size: 0.85rem; }
+}
+@media print {
+    body { background: white; color: black; }
+    .input-section, .top-toolbar, .mobile-hint, .search-box, .copy-split, button { display: none !important; }
+    .team-block { break-inside: avoid; border: 1px solid #333; box-shadow: none; }
+    .players-list { border: 1px solid #999; background: white; max-height: none; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>⚽ Team Distributor Pro</h1>
+        <p class="subtitle">Профессиональное распределение игроков по командам</p>
+    </header>
+
+    <div class="top-toolbar">
+        <button class="icon-btn" id="undoBtn" title="Отменить (Ctrl+Z)" disabled>↶ Отменить</button>
+        <button class="icon-btn" id="redoBtn" title="Вернуть (Ctrl+Y)" disabled>↷ Вернуть</button>
+        <button class="icon-btn" id="themeBtn" title="Сменить тему">🌙 Тема</button>
+        <button class="icon-btn" id="exportBtn" title="Экспорт в файл">📤 Экспорт</button>
+        <button class="icon-btn" id="importBtn" title="Импорт из файла">📥 Импорт</button>
+        <input type="file" id="importFile" accept=".txt" hidden>
+    </div>
+
+    <div class="app-container">
+        <div class="input-section">
+            <h2>📋 Список игроков</h2>
+
+            <div class="team-count-selector">
+                <button class="team-count-btn" data-count="2">👥 2 команды</button>
+                <button class="team-count-btn active" data-count="3">👥 3 команды</button>
+            </div>
+
+            <div class="options-row">
+                <button class="option-toggle" id="genderToggle">⚖ Учитывать пол</button>
+                <button class="option-toggle" id="lockToggle">📌 Сохранять блокировки</button>
+            </div>
+
+            <textarea id="playerInput" placeholder="Введите фамилии игроков (каждый с новой строки)
+Например:
+Жигалин
+Дорофеев В.А.
+Романова Е.Э."></textarea>
+
+            <div class="button-group">
+                <button id="startBtn">🚀 Распределить</button>
+                <button id="resetBtn" class="reset-btn">🗑 Сбросить</button>
+            </div>
+
+            <div class="copy-split">
+                <button id="copyNamesBtn" class="copy-btn">📋 Только имена</button>
+                <button id="copyFullBtn" class="copy-btn">📋 С рейтингами</button>
+            </div>
+
+            <div class="layouts-box">
+                <h3>💾 Сохранённые расклады</h3>
+                <div class="layouts-row">
+                    <input type="text" id="layoutName" placeholder="Название расклада" maxlength="40">
+                    <button class="mini-btn primary" id="saveLayoutBtn">💾 Сохранить</button>
+                </div>
+                <div class="layouts-row">
+                    <select id="layoutSelect">
+                        <option value="">— Выберите расклад —</option>
+                    </select>
+                    <button class="mini-btn" id="loadLayoutBtn">📂 Загрузить</button>
+                    <button class="mini-btn danger" id="deleteLayoutBtn">🗑</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Горячие клавиши:</strong> <kbd>Ctrl+Enter</kbd> — распределить, <kbd>Ctrl+Z</kbd> — отменить,
+                <kbd>Ctrl+Y</kbd> — вернуть, <kbd>Ctrl+S</kbd> — сохранить расклад.<br>
+                <strong>📌 Блокировка:</strong> нажмите на замочек у игрока, чтобы закрепить его в команде.
+                <br><strong>↔ Swap:</strong> перетащите игрока на игрока другой команды, чтобы поменять их местами.
+            </div>
+        </div>
+
+        <div class="teams-section">
+            <h2>🏆 Команды <span class="swipe-hint">(перетащите игроков)</span></h2>
+
+            <div class="balance-indicator">
+                <div class="balance-bar" id="balanceBar"></div>
+            </div>
+            <div class="balance-labels">
+                <span id="balanceLabel">Не сбалансировано</span>
+                <span>Идеальный баланс</span>
+            </div>
+
+            <div class="summary-box" id="summaryBox">
+                <div class="summary-item"><div class="summary-value" id="sumPlayers">0</div><div class="summary-label">Игроков</div></div>
+                <div class="summary-item"><div class="summary-value" id="sumTotal">0</div><div class="summary-label">Сумма</div></div>
+                <div class="summary-item"><div class="summary-value" id="sumAvg">0</div><div class="summary-label">Средний</div></div>
+                <div class="summary-item"><div class="summary-value" id="sumGender">0/0</div><div class="summary-label">М/Ж</div></div>
+            </div>
+
+            <div class="mobile-hint" id="mobileHint">
+                <span>👆 Нажмите на игрока, чтобы переместить</span>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Поиск игрока...">
+            </div>
+
+            <div class="teams-container" id="teamsContainer"></div>
+        </div>
+    </div>
+
+    <div class="team-select-modal" id="teamSelectModal" role="dialog" aria-modal="true">
+        <div class="team-select-content">
+            <div class="team-select-title" id="teamSelectTitle">Переместить игрока</div>
+            <div class="team-select-options" id="teamSelectOptions"></div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+</div>
+
+<script>
+/* ================= БАЗА ================= */
+const playersDB = [
+    { name: 'Жигалин',           rank: 13, gender: 'м', aliases: ['жигалид'] },
+    { name: 'Ермилова К.',       rank: 3,  gender: 'ж' },
+    { name: 'Переведенцев Н.А.', rank: 12, gender: 'м', aliases: ['переведенцев'] },
+    { name: 'Большаков',         rank: 11, gender: 'м' },
+    { name: 'Сундуков С.М.',     rank: 13, gender: 'м', aliases: ['сундуков'] },
+    { name: 'Крапивкин',         rank: 12, gender: 'м' },
+    { name: 'Шкут',              rank: 3,  gender: 'ж' },
+    { name: 'Кузнецов',          rank: 15, gender: 'м' },
+    { name: 'Наумов',            rank: 16, gender: 'м' },
+    { name: 'Сапитон',           rank: 14, gender: 'м' },
+    { name: 'Москвина',          rank: 1,  gender: 'ж' },
+    { name: 'Ноздрачева А.А.',   rank: -1, gender: 'ж', aliases: ['ноздрачева'] },
+    { name: 'Пестрецова',        rank: 2,  gender: 'ж' },
+    { name: 'Игнатенко',         rank: 10, gender: 'м' },
+    { name: 'Соломко Д.К.',      rank: 6,  gender: 'м', aliases: ['соломко'] },
+    { name: 'Барсуков',          rank: 17, gender: 'м' },
+    { name: 'Пирогов',           rank: 11, gender: 'м' },
+    { name: 'Садыков Д.Э.',      rank: 4,  gender: 'м', aliases: ['садыков'] },
+    { name: 'Романова Е.Э.',     rank: 3,  gender: 'ж', aliases: ['романова'] },
+    { name: 'Мамедов',           rank: 8,  gender: 'м' },
+    { name: 'Дорофеев В.А.',     rank: 16, gender: 'м', aliases: ['дорофеев'] },
+    { name: 'Федорина',          rank: 3,  gender: 'ж' },
+    { name: 'Фурсова',           rank: 2,  gender: 'ж' },
+    { name: 'Константинов',      rank: 5,  gender: 'м' },
+    { name: 'Сидоренко А.Р.',    rank: 14, gender: 'м', aliases: ['сидоренко'] },
+    { name: 'Жаворонков С.С.',   rank: 14, gender: 'м', aliases: ['жаворонков'] },
+    { name: 'Цугуй',             rank: 15, gender: 'м' },
+    { name: 'Хасянов Д.А.',      rank: 7,  gender: 'м', aliases: ['хасянов'] },
+    { name: 'Аббакумов В.А.',    rank: 1,  gender: 'м' },
+    { name: 'Амирасланова Л.Д.', rank: 1,  gender: 'ж' },
+    { name: 'Бачурин',           rank: 9,  gender: 'м' },
+    { name: 'Бачурина',          rank: 4,  gender: 'ж' },
+    { name: 'Соколова',          rank: 1,  gender: 'ж' },
+    { name: 'Воронцова',         rank: 4,  gender: 'ж' },
+    { name: 'Данилочкин',        rank: 5,  gender: 'м' },
+    { name: 'Дергунов Д.А.',     rank: 16, gender: 'м' },
+    { name: 'Дидур',             rank: 10, gender: 'м' },
+    { name: 'Жданов К.Е.',       rank: 7,  gender: 'м' },
+    { name: 'Иванов',            rank: 6,  gender: 'м' },
+    { name: 'Ивашкив А.И.',      rank: 8,  gender: 'м' },
+    { name: 'Калиев',            rank: 7,  gender: 'м' },
+    { name: 'Коломейцев',        rank: 8,  gender: 'м' },
+    { name: 'Куропаткин А.С.',   rank: 2,  gender: 'м' },
+    { name: 'Лободенков',        rank: 7,  gender: 'м' },
+    { name: 'Насонов',           rank: 17, gender: 'м' },
+    { name: 'Оружейников',       rank: 8,  gender: 'м' },
+    { name: 'Пахомов',           rank: 1,  gender: 'м' },
+    { name: 'Растрогина',        rank: 2,  gender: 'ж' },
+    { name: 'Сакун',             rank: 3,  gender: 'ж' },
+    { name: 'Саломатин С.И.',    rank: 9,  gender: 'м' },
+    { name: 'Семагина',          rank: 4,  gender: 'ж' },
+    { name: 'Скороход',          rank: 5,  gender: 'м' },
+    { name: 'Стрепетова',        rank: 2,  gender: 'ж' },
+    { name: 'Стриж',             rank: 16, gender: 'м' },
+    { name: 'Сырокваша',         rank: 8,  gender: 'м' },
+    { name: 'Ушаков',            rank: 6,  gender: 'м' },
+    { name: 'Удалов',            rank: 5,  gender: 'м' },
+    { name: 'Шапошников',        rank: 3,  gender: 'м' },
+    { name: 'Шепелев В.М.',      rank: 13, gender: 'м' }
+];
+
+const norm = s => s.toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ').trim();
+const playerIndex = new Map();
+(function() {
+    const surnameMap = new Map();
+    for (const p of playersDB) {
+        playerIndex.set(norm(p.name), p);
+        if (p.aliases) p.aliases.forEach(a => playerIndex.set(norm(a), p));
+        const s = norm(p.name).split(' ')[0];
+        if (!surnameMap.has(s)) surnameMap.set(s, new Set());
+        surnameMap.get(s).add(p.name);
+    }
+    surnameMap.forEach((names, s) => {
+        if (names.size === 1 && !playerIndex.has(s)) {
+            playerIndex.set(s, playersDB.find(x => x.name === [...names][0]));
+        }
+    });
+})();
+const findPlayer = name => playerIndex.get(norm(name)) || null;
+function extractName(line) {
+    let n = line.replace(/^\d+[\.\)]\s*/, '').trim();
+    n = n.replace(/[^а-яёА-ЯЁ\s\.\-]/g, '').trim();
+    return n.length >= 2 ? n : null;
+}
+
+/* ================= СОСТОЯНИЕ ================= */
+const state = {
+    players: [],
+    teams: { 1: [], 2: [], 3: [] },
+    teamNames: { 1: 'Команда 1', 2: 'Команда 2', 3: 'Команда 3' },
+    nextId: 1,
+    teamCount: 3,
+    balanceGender: false,
+    keepLocks: false,
+    isTouch: window.matchMedia('(pointer: coarse)').matches,
+    selectedPlayer: null,
+    history: [],
+    historyIdx: -1,
+    filter: ''
+};
+
+const ICONS = { 1: '🏅', 2: '🥈', 3: '🥉' };
+
+/* ================= DOM ================= */
+const $ = id => document.getElementById(id);
+const playerInput = $('playerInput');
+const startBtn = $('startBtn');
+const resetBtn = $('resetBtn');
+const copyNamesBtn = $('copyNamesBtn');
+const copyFullBtn = $('copyFullBtn');
+const undoBtn = $('undoBtn');
+const redoBtn = $('redoBtn');
+const themeBtn = $('themeBtn');
+const exportBtn = $('exportBtn');
+const importBtn = $('importBtn');
+const importFile = $('importFile');
+const notification = $('notification');
+const teamSelectModal = $('teamSelectModal');
+const teamSelectTitle = $('teamSelectTitle');
+const teamSelectOptions = $('teamSelectOptions');
+const teamsContainer = $('teamsContainer');
+const balanceBar = $('balanceBar');
+const balanceLabel = $('balanceLabel');
+const summaryBox = $('summaryBox');
+const searchInput = $('searchInput');
+const genderToggle = $('genderToggle');
+const lockToggle = $('lockToggle');
+const layoutName = $('layoutName');
+const layoutSelect = $('layoutSelect');
+const saveLayoutBtn = $('saveLayoutBtn');
+const loadLayoutBtn = $('loadLayoutBtn');
+const deleteLayoutBtn = $('deleteLayoutBtn');
+const teamCountBtns = document.querySelectorAll('.team-count-btn');
+
+/* ================= УТИЛИТЫ ================= */
+let notifTimer = null;
+function notify(msg, type = 'success') {
+    notification.textContent = msg;
+    notification.className = 'notification' + (type === 'error' ? ' error' : type === 'warning' ? ' warning' : '');
+    notification.style.display = 'block';
+    clearTimeout(notifTimer);
+    notifTimer = setTimeout(() => { notification.style.display = 'none'; }, 3200);
+}
+
+function saveLocal() {
+    try {
+        localStorage.setItem('tdp_state', JSON.stringify({
+            players: state.players,
+            teams: state.teams,
+            teamNames: state.teamNames,
+            nextId: state.nextId,
+            teamCount: state.teamCount,
+            balanceGender: state.balanceGender,
+            keepLocks: state.keepLocks
+        }));
+    } catch (e) {}
+}
+
+function loadLocal() {
+    try {
+        const raw = localStorage.getItem('tdp_state');
+        if (!raw) return false;
+        const d = JSON.parse(raw);
+        if (!Array.isArray(d.players)) return false;
+        state.players = d.players;
+        state.teams = { 1: d.teams?.[1] || [], 2: d.teams?.[2] || [], 3: d.teams?.[3] || [] };
+        state.teamNames = d.teamNames || { 1: 'Команда 1', 2: 'Команда 2', 3: 'Команда 3' };
+        state.nextId = d.nextId || 1;
+        state.teamCount = d.teamCount === 2 ? 2 : 3;
+        state.balanceGender = !!d.balanceGender;
+        state.keepLocks = !!d.keepLocks;
+        return true;
+    } catch (e) { return false; }
+}
+
+/* ================= ИСТОРИЯ ================= */
+function snapshot() {
+    return JSON.stringify({
+        teams: Object.fromEntries(Object.entries(state.teams).map(([k, arr]) => [k, arr.map(p => p.id)])),
+        players: state.players.map(p => ({ id: p.id, locked: !!p.locked, team: p.team }))
+    });
+}
+
+function pushHistory() {
+    const snap = snapshot();
+    if (state.history[state.historyIdx] === snap) return;
+    state.history = state.history.slice(0, state.historyIdx + 1);
+    state.history.push(snap);
+    if (state.history.length > 30) state.history.shift();
+    state.historyIdx = state.history.length - 1;
+    updateHistoryButtons();
+}
+
+function applySnapshot(snap) {
+    const d = JSON.parse(snap);
+    const byId = new Map(state.players.map(p => [p.id, p]));
+    for (const [team, ids] of Object.entries(d.teams)) {
+        state.teams[team] = ids.map(id => byId.get(id)).filter(Boolean);
+    }
+    d.players.forEach(pd => {
+        const p = byId.get(pd.id);
+        if (p) { p.locked = pd.locked; p.team = pd.team; }
+    });
+    renderTeams();
+    updateStats();
+    updateBalanceIndicator();
+    saveLocal();
+}
+
+function undo() {
+    if (state.historyIdx <= 0) return;
+    state.historyIdx--;
+    applySnapshot(state.history[state.historyIdx]);
+    updateHistoryButtons();
+    notify('Отменено', 'warning');
+}
+function redo() {
+    if (state.historyIdx >= state.history.length - 1) return;
+    state.historyIdx++;
+    applySnapshot(state.history[state.historyIdx]);
+    updateHistoryButtons();
+    notify('Возвращено', 'warning');
+}
+function updateHistoryButtons() {
+    undoBtn.disabled = state.historyIdx <= 0;
+    redoBtn.disabled = state.historyIdx >= state.history.length - 1;
+}
+
+/* ================= РЕНДЕР ================= */
+function renderTeamTemplates() {
+    teamsContainer.innerHTML = '';
+    for (let i = 1; i <= state.teamCount; i++) {
+        const name = state.teamNames[i] || `Команда ${i}`;
+        const html = `
+            <div class="team-block" data-team="${i}">
+                <div class="team-header">
+                    <div class="team-title">
+                        <span class="team-icon">${ICONS[i]}</span>
+                        <input class="team-name-input" data-team="${i}" value="${escapeHtml(name)}" maxlength="30">
+                    </div>
+                    <div class="player-count" data-team="${i}">0</div>
+                </div>
+                <div class="players-list" id="team${i}" data-team="${i}">
+                    <p class="empty-hint">Игроки будут здесь</p>
+                </div>
+                <div class="team-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item"><span class="stat-value" id="team${i}-total">0</span><span class="stat-label">Сумма</span></div>
+                        <div class="stat-item"><span class="stat-value" id="team${i}-avg">0</span><span class="stat-label">Средний</span></div>
+                        <div class="stat-item"><span class="stat-value" id="team${i}-male">0</span><span class="stat-label">Муж</span></div>
+                        <div class="stat-item"><span class="stat-value" id="team${i}-female">0</span><span class="stat-label">Жен</span></div>
+                    </div>
+                </div>
+            </div>`;
+        teamsContainer.insertAdjacentHTML('beforeend', html);
+    }
+    // Team name inputs
+    document.querySelectorAll('.team-name-input').forEach(inp => {
+        inp.addEventListener('change', e => {
+            const t = parseInt(e.target.dataset.team);
+            state.teamNames[t] = e.target.value.trim() || `Команда ${t}`;
+            e.target.value = state.teamNames[t];
+            saveLocal();
+            renderTeamSelectOptions();
+        });
+    });
+    setupTeamLists();
+    setupTeamSelectOptions();
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function renderTeams() {
+    for (let i = 1; i <= state.teamCount; i++) {
+        const list = $(`team${i}`);
+        if (!list) continue;
+        list.innerHTML = '';
+        const players = state.teams[i] || [];
+        if (players.length === 0) {
+            list.innerHTML = '<p class="empty-hint">Игроков нет</p>';
+        } else {
+            players.forEach(p => list.appendChild(createPlayerElement(p)));
+        }
+        const c = list.parentElement.querySelector('.player-count');
+        if (c) {
+            c.textContent = players.length;
+            c.style.transform = 'scale(1.15)';
+            setTimeout(() => { c.style.transform = 'scale(1)'; }, 200);
+        }
+    }
+    applyFilter();
+}
+
+function createPlayerElement(player) {
+    const div = document.createElement('div');
+    div.className = 'player-item' + (player.locked ? ' locked' : '');
+    div.dataset.playerId = player.id;
+
+    if (state.isTouch) {
+        div.addEventListener('click', e => {
+            if (e.target.closest('.player-lock')) return;
+            e.stopPropagation();
+            showTeamSelectModal(player.id);
+        });
+    } else {
+        div.draggable = true;
+        div.addEventListener('dragstart', handleDragStart);
+        div.addEventListener('dragend', () => div.classList.remove('dragging'));
+    }
+
+    div.innerHTML = `
+        <div class="player-name">${escapeHtml(player.name)}</div>
+        <div class="player-details">
+            <span class="player-rating">${player.rank}</span>
+            <span class="player-gender ${player.gender === 'м' ? 'male' : 'female'}">
+                ${player.gender === 'м' ? 'М' : 'Ж'}
+            </span>
+            <button class="player-lock ${player.locked ? 'active' : ''}" 
+                    title="${player.locked ? 'Разблокировать' : 'Закрепить в команде'}"
+                    data-player-id="${player.id}">
+                ${player.locked ? '🔒' : '🔓'}
+            </button>
+        </div>
+    `;
+    div.querySelector('.player-lock').addEventListener('click', e => {
+        e.stopPropagation();
+        toggleLock(player.id);
+    });
+    return div;
+}
+
+function toggleLock(playerId) {
+    const p = state.players.find(x => x.id === playerId);
+    if (!p) return;
+    p.locked = !p.locked;
+    saveLocal();
+    const el = document.querySelector(`.player-item[data-player-id="${playerId}"]`);
+    if (el) {
+        el.classList.toggle('locked', p.locked);
+        const btn = el.querySelector('.player-lock');
+        if (btn) {
+            btn.classList.toggle('active', p.locked);
+            btn.textContent = p.locked ? '🔒' : '🔓';
+            btn.title = p.locked ? 'Разблокировать' : 'Закрепить в команде';
+        }
+    }
+    notify(p.locked ? `📌 ${p.name} закреплён` : `🔓 ${p.name} разблокирован`, 'warning');
+}
+
+function updateStats() {
+    let totalPlayers = 0, totalRank = 0, totalM = 0, totalF = 0;
+    for (let i = 1; i <= state.teamCount; i++) {
+        const team = state.teams[i] || [];
+        const total = team.reduce((s, p) => s + p.rank, 0);
+        const avg = team.length ? (total / team.length).toFixed(1) : '0';
+        const male = team.filter(p => p.gender === 'м').length;
+        const female = team.filter(p => p.gender === 'ж').length;
+
+        if ($(`team${i}-total`)) $(`team${i}-total`).textContent = total;
+        if ($(`team${i}-avg`)) $(`team${i}-avg`).textContent = avg;
+        if ($(`team${i}-male`)) $(`team${i}-male`).textContent = male;
+        if ($(`team${i}-female`)) $(`team${i}-female`).textContent = female;
+
+        totalPlayers += team.length;
+        totalRank += total;
+        totalM += male;
+        totalF += female;
+    }
+    $('sumPlayers').textContent = totalPlayers;
+    $('sumTotal').textContent = totalRank;
+    $('sumAvg').textContent = totalPlayers ? (totalRank / totalPlayers).toFixed(1) : '0';
+    $('sumGender').textContent = `${totalM}/${totalF}`;
+}
+
+function updateBalanceIndicator() {
+    const avgs = [];
+    for (let i = 1; i <= state.teamCount; i++) {
+        const team = state.teams[i] || [];
+        if (team.length === 0) {
+            balanceBar.style.width = '0%';
+            balanceLabel.textContent = 'Нет данных';
+            return;
+        }
+        avgs.push(team.reduce((s, p) => s + p.rank, 0) / team.length);
+    }
+    const diff = Math.max(...avgs) - Math.min(...avgs);
+    const ratio = Math.max(0, Math.min(100, 100 - diff * 8));
+    balanceBar.style.width = `${ratio}%`;
+
+    if (ratio > 90) {
+        balanceBar.style.background = 'linear-gradient(90deg, #06d6a0, #4cc9f0)';
+        balanceBar.classList.add('balanced');
+        balanceLabel.textContent = `Идеально (Δ=${diff.toFixed(1)})`;
+    } else if (ratio > 70) {
+        balanceBar.style.background = 'linear-gradient(90deg, #ffd166, #ff9e00)';
+        balanceBar.classList.remove('balanced');
+        balanceLabel.textContent = `Хорошо (Δ=${diff.toFixed(1)})`;
+    } else if (ratio > 45) {
+        balanceBar.style.background = 'linear-gradient(90deg, #ff9e00, #ff6d00)';
+        balanceBar.classList.remove('balanced');
+        balanceLabel.textContent = `Средне (Δ=${diff.toFixed(1)})`;
+    } else {
+        balanceBar.style.background = 'linear-gradient(90deg, #ef476f, #ff6d00)';
+        balanceBar.classList.remove('balanced');
+        balanceLabel.textContent = `Плохо (Δ=${diff.toFixed(1)})`;
+    }
+}
+
+function applyFilter() {
+    const q = state.filter.toLowerCase().trim();
+    document.querySelectorAll('.player-item').forEach(el => {
+        const name = el.querySelector('.player-name')?.textContent.toLowerCase() || '';
+        el.classList.toggle('filtered-out', q && !name.includes(q));
+    });
+}
+
+/* ================= DND ================= */
+let draggedPlayerId = null;
+
+function setupTeamLists() {
+    document.querySelectorAll('.players-list').forEach(list => {
+        list.addEventListener('dragover', e => {
+            if (state.isTouch) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            list.classList.add('drag-over');
+        });
+        list.addEventListener('dragleave', e => {
+            if (!list.contains(e.relatedTarget)) list.classList.remove('drag-over');
+        });
+        list.addEventListener('drop', handleDrop);
+    });
+}
+
+function handleDragStart(e) {
+    if (state.isTouch) { e.preventDefault(); return; }
+    const item = e.target.closest('.player-item');
+    if (!item) return;
+    draggedPlayerId = parseInt(item.dataset.playerId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(draggedPlayerId));
+    setTimeout(() => item.classList.add('dragging'), 0);
+}
+
+function handleDrop(e) {
+    if (state.isTouch) return;
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (!draggedPlayerId) return;
+
+    // Swap если дропнули на другого игрока
+    const targetItem = e.target.closest('.player-item');
+    if (targetItem) {
+        const targetId = parseInt(targetItem.dataset.playerId);
+        if (targetId && targetId !== draggedPlayerId) {
+            swapPlayers(draggedPlayerId, targetId);
+            draggedPlayerId = null;
+            return;
+        }
+    }
+
+    const targetTeam = parseInt(e.currentTarget.dataset.team);
+    movePlayerToTeam(draggedPlayerId, targetTeam);
+    draggedPlayerId = null;
+}
+
+/* ================= МОДАЛКА ================= */
+function setupTeamSelectOptions() {
+    teamSelectOptions.innerHTML = '';
+    for (let i = 1; i <= state.teamCount; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'team-select-btn';
+        btn.dataset.team = i;
+        btn.textContent = `${ICONS[i]} ${state.teamNames[i]}`;
+        btn.addEventListener('click', () => {
+            if (state.selectedPlayer) movePlayerToTeam(state.selectedPlayer, i);
+            closeModal();
+        });
+        teamSelectOptions.appendChild(btn);
+    }
+    const cancel = document.createElement('button');
+    cancel.className = 'team-select-btn cancel';
+    cancel.textContent = '❌ Отмена';
+    cancel.addEventListener('click', closeModal);
+    teamSelectOptions.appendChild(cancel);
+}
+function renderTeamSelectOptions() { setupTeamSelectOptions(); }
+
+function showTeamSelectModal(playerId) {
+    const p = state.players.find(x => x.id === playerId);
+    if (!p) return;
+    state.selectedPlayer = playerId;
+    teamSelectTitle.textContent = `Переместить: ${p.name} (${p.rank})`;
+    teamSelectModal.style.display = 'flex';
+    if (navigator.vibrate) navigator.vibrate(20);
+}
+function closeModal() {
+    teamSelectModal.style.display = 'none';
+    state.selectedPlayer = null;
+}
+
+/* ================= ПЕРЕМЕЩЕНИЕ / SWAP ================= */
+function movePlayerToTeam(playerId, targetTeam) {
+    const p = state.players.find(x => x.id === playerId);
+    if (!p || p.team === targetTeam) return;
+    const old = p.team;
+    if (old && state.teams[old]) state.teams[old] = state.teams[old].filter(x => x.id !== playerId);
+    p.team = targetTeam;
+    if (!state.teams[targetTeam]) state.teams[targetTeam] = [];
+    state.teams[targetTeam].push(p);
+    renderTeams();
+    updateStats();
+    updateBalanceIndicator();
+    saveLocal();
+    pushHistory();
+}
+
+function swapPlayers(idA, idB) {
+    const a = state.players.find(x => x.id === idA);
+    const b = state.players.find(x => x.id === idB);
+    if (!a || !b || a.team === b.team) return;
+    const teamA = a.team, teamB = b.team;
+    state.teams[teamA] = state.teams[teamA].filter(x => x.id !== idA);
+    state.teams[teamB] = state.teams[teamB].filter(x => x.id !== idB);
+    a.team = teamB; b.team = teamA;
+    state.teams[teamA].push(b);
+    state.teams[teamB].push(a);
+    renderTeams();
+    updateStats();
+    updateBalanceIndicator();
+    saveLocal();
+    pushHistory();
+    notify(`↔ ${a.name} ⇄ ${b.name}`, 'warning');
+}
+
+/* ================= АЛГОРИТМ ================= */
+function distributeGreedy(players) {
+    const teams = {};
+    for (let i = 1; i <= state.teamCount; i++) teams[i] = [];
+
+    const locked = state.keepLocks ? players.filter(p => p.locked && p.team && state.teams[p.team]) : [];
+    const free = players.filter(p => !locked.includes(p));
+
+    locked.forEach(p => {
+        p.team = p.team;
+        teams[p.team].push(p);
+    });
+
+    const sumOf = t => teams[t].reduce((s, p) => s + p.rank, 0);
+
+    const sorted = [...free].sort((a, b) => b.rank - a.rank);
+    for (const p of sorted) {
+        let best = 1, bestScore = Infinity;
+        for (let i = 1; i <= state.teamCount; i++) {
+            let score = sumOf(i);
+            if (state.balanceGender) {
+                const same = teams[i].filter(x => x.gender === p.gender).length;
+                const other = teams[i].length - same;
+                score += (same - other) * 2;
+            }
+            if (score < bestScore ||
+                (score === bestScore && teams[i].length < teams[best].length)) {
+                bestScore = score; best = i;
+            }
+        }
+        teams[best].push(p);
+        p.team = best;
+    }
+    return teams;
+}
+
+/* ================= ЗАПУСК ================= */
+function startDistribution() {
+    const text = playerInput.value.trim();
+    if (!text) { notify('Введите список игроков', 'error'); return; }
+
+    startBtn.style.animation = 'pulse 0.5s ease';
+    setTimeout(() => { startBtn.style.animation = ''; }, 500);
+
+    // Сохраняем блокировки и команды для keepLocks
+    const prevTeams = {};
+    state.players.forEach(p => {
+        if (p.locked && p.team) {
+            prevTeams[p.name] = p.team;
+        }
+    });
+
+    state.players = [];
+    state.teams = { 1: [], 2: [], 3: [] };
+    state.nextId = 1;
+
+    const seen = new Set();
+    let dup = 0, notFound = 0;
+
+    for (const line of text.split('\n')) {
+        const name = extractName(line.trim());
+        if (!name) continue;
+        const data = findPlayer(name);
+        if (!data) { notFound++; continue; }
+        if (seen.has(data.name)) { dup++; continue; }
+        seen.add(data.name);
+        const keepTeam = state.keepLocks ? prevTeams[data.name] : null;
+        state.players.push({
+            id: state.nextId++,
+            name: data.name,
+            rank: data.rank,
+            gender: data.gender,
+            team: keepTeam || null,
+            locked: !!keepTeam
+        });
+    }
+
+    if (state.players.length === 0) { notify('Не найдено ни одного известного игрока', 'error'); return; }
+    if (state.players.length < state.teamCount) {
+        notify(`Найдено ${state.players.length} игроков, нужно минимум ${state.teamCount}`, 'error');
+        return;
+    }
+
+    state.teams = distributeGreedy(state.players);
+    renderTeams();
+    updateStats();
+    updateBalanceIndicator();
+    saveLocal();
+    pushHistory();
+
+    let msg = `Распределено ${state.players.length}`;
+    if (dup) msg += ` · дублей: ${dup}`;
+    if (notFound) msg += ` · не найдено: ${notFound}`;
+    notify(msg);
+
+    // Конфетти при идеальном балансе
+    const avgs = [];
+    for (let i = 1; i <= state.teamCount; i++) {
+        const t = state.teams[i];
+        if (t.length) avgs.push(t.reduce((s, p) => s + p.rank, 0) / t.length);
+    }
+    if (avgs.length === state.teamCount && Math.max(...avgs) - Math.min(...avgs) < 0.5) {
+        setTimeout(launchConfetti, 400);
+    }
+}
+
+/* ================= КОПИРОВАНИЕ / ЭКСПОРТ ================= */
+function teamsAsText(withRatings) {
+    let text = '';
+    for (let i = 1; i <= state.teamCount; i++) {
+        text += `${state.teamNames[i].toUpperCase()}:\n`;
+        const team = state.teams[i] || [];
+        if (!team.length) text += '   (нет игроков)\n';
+        else team.forEach((p, idx) => {
+            text += `   ${idx + 1}. ${p.name}`;
+            if (withRatings) text += ` (${p.rank}, ${p.gender})`;
+            text += '\n';
+        });
+        text += '\n';
+    }
+    return text;
+}
+
+function copyText(withRatings) {
+    let total = 0;
+    for (let i = 1; i <= state.teamCount; i++) total += (state.teams[i] || []).length;
+    if (!total) { notify('Сначала распределите игроков', 'error'); return; }
+    const text = teamsAsText(withRatings);
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+            .then(() => notify('✅ Скопировано'))
+            .catch(() => fallbackCopy(text));
+    } else fallbackCopy(text);
+}
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy') ? notify('✅ Скопировано') : notify('❌ Ошибка', 'error'); }
+    catch (e) { notify('❌ Ошибка', 'error'); }
+    finally { document.body.removeChild(ta); }
+}
+
+function exportToFile() {
+    let total = 0;
+    for (let i = 1; i <= state.teamCount; i++) total += (state.teams[i] || []).length;
+    if (!total) { notify('Нечего экспортировать', 'error'); return; }
+    const content = teamsAsText(false) + '\n' + teamsAsText(true);
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `teams_${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify('📤 Файл сохранён');
+}
+
+function importFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+        playerInput.value = e.target.result;
+        notify('📥 Список загружен в поле ввода');
+    };
+    reader.readAsText(file, 'UTF-8');
+}
+
+/* ================= РАСКЛАДЫ ================= */
+function getLayouts() {
+    try { return JSON.parse(localStorage.getItem('tdp_layouts') || '{}'); }
+    catch (e) { return {}; }
+}
+function setLayouts(obj) {
+    try { localStorage.setItem('tdp_layouts', JSON.stringify(obj)); } catch (e) {}
+    refreshLayoutsList();
+}
+function refreshLayoutsList() {
+    const layouts = getLayouts();
+    const cur = layoutSelect.value;
+    layoutSelect.innerHTML = '<option value="">— Выберите расклад —</option>';
+    Object.keys(layouts).sort().forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = `${name} (${layouts[name].date || ''})`;
+        layoutSelect.appendChild(opt);
+    });
+    if (layouts[cur]) layoutSelect.value = cur;
+}
+function saveLayout() {
+    const name = (layoutName.value || '').trim();
+    if (!name) { notify('Введите название', 'error'); return; }
+    let total = 0;
+    for (let i = 1; i <= state.teamCount; i++) total += (state.teams[i] || []).length;
+    if (!total) { notify('Нечего сохранять', 'error'); return; }
+    const layouts = getLayouts();
+    layouts[name] = {
+        teamCount: state.teamCount,
+        teamNames: { ...state.teamNames },
+        teams: Object.fromEntries(Object.entries(state.teams).map(([k, arr]) => [k, arr.map(p => p.id)])),
+        players: state.players,
+        balanceGender: state.balanceGender,
+        keepLocks: state.keepLocks,
+        date: new Date().toISOString().slice(0, 10)
+    };
+    setLayouts(layouts);
+    notify(`💾 "${name}" сохранён`);
+    layoutName.value = '';
+}
+function loadLayout() {
+    const name = layoutSelect.value;
+    if (!name) { notify('Выберите расклад', 'error'); return; }
+    const layouts = getLayouts();
+    const d = layouts[name];
+    if (!d) { notify('Расклад не найден', 'error'); return; }
+    state.teamCount = d.teamCount || 3;
+    state.teamNames = d.teamNames || { 1: 'Команда 1', 2: 'Команда 2', 3: 'Команда 3' };
+    state.players = d.players || [];
+    state.nextId = state.players.length + 1;
+    state.teams = { 1: [], 2: [], 3: [] };
+    const byId = new Map(state.players.map(p => [p.id, p]));
+    for (const [team, ids] of Object.entries(d.teams || {})) {
+        state.teams[team] = ids.map(id => byId.get(id)).filter(Boolean);
+    }
+    state.balanceGender = !!d.balanceGender;
+    state.keepLocks = !!d.keepLocks;
+
+    // UI
+    teamCountBtns.forEach(btn => btn.classList.toggle('active', parseInt(btn.dataset.count) === state.teamCount));
+    genderToggle.classList.toggle('active', state.balanceGender);
+    lockToggle.classList.toggle('active', state.keepLocks);
+
+    renderTeamTemplates();
+    renderTeams();
+    updateStats();
+    updateBalanceIndicator();
+    saveLocal();
+    pushHistory();
+    notify(`📂 "${name}" загружен`);
+}
+function deleteLayout() {
+    const name = layoutSelect.value;
+    if (!name) return;
+    if (!confirm(`Удалить расклад "${name}"?`)) return;
+    const layouts = getLayouts();
+    delete layouts[name];
+    setLayouts(layouts);
+    notify('🗑 Удалено', 'warning');
+}
+
+/* ================= КОНФЕТТИ ================= */
+function launchConfetti() {
+    const colors = ['#ff9e00', '#4cc9f0', '#9d4edd', '#06d6a0', '#ffd166', '#ef476f'];
+    for (let i = 0; i < 70; i++) {
+        const el = document.createElement('div');
+        el.style.cssText = `
+            position: fixed;
+            top: -20px;
+            left: ${Math.random() * 100}vw;
+            width: ${6 + Math.random() * 6}px;
+            height: ${8 + Math.random() * 8}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            z-index: 9999;
+            pointer-events: none;
+            border-radius: 2px;
+            animation: confettiFall ${1.5 + Math.random() * 1.5}s linear forwards;
+            animation-delay: ${Math.random() * 0.4}s;
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    }
+}
+
+/* ================= СБРОС / КОМАНДЫ ================= */
+function resetAll() {
+    if (!confirm('Сбросить все распределения?')) return;
+    state.players = [];
+    state.teams = { 1: [], 2: [], 3: [] };
+    state.nextId = 1;
+    state.history = [];
+    state.historyIdx = -1;
+    playerInput.value = '';
+    try { localStorage.removeItem('tdp_state'); } catch (e) {}
+    renderTeams();
+    updateStats();
+    updateBalanceIndicator();
+    updateHistoryButtons();
+    notify('Сброшено', 'warning');
+}
+
+function setTeamCount(c) {
+    if (state.teamCount === c) return;
+    state.teamCount = c;
+    teamCountBtns.forEach(btn => btn.classList.toggle('active', parseInt(btn.dataset.count) === c));
+
+    if (state.players.length >= c) {
+        state.teams = distributeGreedy(state.players);
+        renderTeamTemplates();
+        renderTeams();
+        updateStats();
+        updateBalanceIndicator();
+        saveLocal();
+        pushHistory();
+        notify(`Пересобрано на ${c} команды`);
+    } else {
+        state.teams = { 1: [], 2: [], 3: [] };
+        renderTeamTemplates();
+        updateStats();
+        updateBalanceIndicator();
+        saveLocal();
+    }
+}
+
+/* ================= ТЕМА ================= */
+function toggleTheme() {
+    document.body.classList.toggle('light-theme');
+    const isLight = document.body.classList.contains('light-theme');
+    themeBtn.textContent = isLight ? '☀ Тема' : '🌙 Тема';
+    try { localStorage.setItem('tdp_theme', isLight ? 'light' : 'dark'); } catch (e) {}
+}
+function restoreTheme() {
+    try {
+        if (localStorage.getItem('tdp_theme') === 'light') {
+            document.body.classList.add('light-theme');
+            themeBtn.textContent = '☀ Тема';
+        }
+    } catch (e) {}
+}
+
+/* ================= ИНИЦИАЛИЗАЦИЯ ================= */
+function init() {
+    if (state.isTouch) document.body.classList.add('touch-device');
+    restoreTheme();
+
+    startBtn.addEventListener('click', startDistribution);
+    resetBtn.addEventListener('click', resetAll);
+    copyNamesBtn.addEventListener('click', () => copyText(false));
+    copyFullBtn.addEventListener('click', () => copyText(true));
+    undoBtn.addEventListener('click', undo);
+    redoBtn.addEventListener('click', redo);
+    themeBtn.addEventListener('click', toggleTheme);
+    exportBtn.addEventListener('click', exportToFile);
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', e => {
+        if (e.target.files[0]) importFromFile(e.target.files[0]);
+        e.target.value = '';
+    });
+
+    genderToggle.addEventListener('click', () => {
+        state.balanceGender = !state.balanceGender;
+        genderToggle.classList.toggle('active', state.balanceGender);
+        saveLocal();
+        notify(state.balanceGender ? '⚖ Учёт пола включён' : 'Учёт пола выключен', 'warning');
+    });
+    lockToggle.addEventListener('click', () => {
+        state.keepLocks = !state.keepLocks;
+        lockToggle.classList.toggle('active', state.keepLocks);
+        saveLocal();
+        notify(state.keepLocks ? '📌 Блокировки сохраняются' : 'Блокировки игнорируются', 'warning');
+    });
+
+    teamCountBtns.forEach(btn => btn.addEventListener('click', () => setTeamCount(parseInt(btn.dataset.count))));
+
+    saveLayoutBtn.addEventListener('click', saveLayout);
+    loadLayoutBtn.addEventListener('click', loadLayout);
+    deleteLayoutBtn.addEventListener('click', deleteLayout);
+    refreshLayoutsList();
+
+    searchInput.addEventListener('input', e => {
+        state.filter = e.target.value;
+        applyFilter();
+    });
+
+    teamSelectModal.addEventListener('click', e => { if (e.target === teamSelectModal) closeModal(); });
+
+    document.addEventListener('keydown', e => {
+        const mod = e.ctrlKey || e.metaKey;
+        if (mod && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+        else if (mod && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); redo(); }
+        else if (mod && e.key === 'Enter') { e.preventDefault(); startDistribution(); }
+        else if (mod && e.key === 's') { e.preventDefault(); saveLayout(); }
+        else if (e.key === 'Escape') closeModal();
+    });
+
+    // Восстановление
+    const restored = loadLocal();
+    if (restored) {
+        teamCountBtns.forEach(btn => btn.classList.toggle('active', parseInt(btn.dataset.count) === state.teamCount));
+        genderToggle.classList.toggle('active', state.balanceGender);
+        lockToggle.classList.toggle('active', state.keepLocks);
+    }
+    renderTeamTemplates();
+    if (restored && state.players.length > 0) {
+        renderTeams();
+        updateStats();
+        updateBalanceIndicator();
+        pushHistory();
+    }
+
+    // Защита от двойного тапа
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', e => {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) e.preventDefault();
+        lastTouchEnd = now;
+    }, false);
+
+    window.addEventListener('orientationchange', () => setTimeout(renderTeams, 300));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
